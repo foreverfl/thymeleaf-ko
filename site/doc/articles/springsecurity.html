@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+	<title>Thymeleaf + Spring Security integration basics - Thymeleaf</title>
+	<meta charset="UTF-8"/>
+	<meta name="generator" content="pandoc">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+	<link rel="icon" href="../images/favicon.ico"/>
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Ubuntu:400,400italic,700,700italic"/>
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Ubuntu+Mono:400,700,400italic,700italic"/>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/2.1.3/normalize.min.css" media="screen"/>
+	<link rel="stylesheet" href="../styles/thymeleaf.css"/>
+	<link rel="stylesheet" href="../styles/thymeleaf-articles.css"/>
+
+	<script src="https://unpkg.com/dumb-query-selector@3.0.0/dumb-query-selector.js" defer></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.6.0/components/prism-core.min.js" defer data-manual></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.6.0/components/prism-markup.min.js" defer></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.6.0/components/prism-clike.min.js" defer></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.6.0/components/prism-java.min.js" defer></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.6.0/plugins/line-numbers/prism-line-numbers.min.js" defer></script>
+	<script src="../scripts/thymeleaf-articles.js" defer></script>
+</head>
+
+<body lang="en" class="article">
+
+	<div class="fluid-container toolbar-container">
+		<nav class="fluid-block toolbar">
+			<div class="toolbar-menu">
+				<div class="toolbar-menu-location">Docs</div>
+				<button id="site-menu-button" type="button" class="toolbar-menu-button">Site Menu</button>
+			</div>
+			<div id="site-menu" class="toolbar-menu-items">
+				<ul class="toolbar-links">
+					<li><a href="../../index.html" class="toolbar-link">Home</a></li>
+					<li><a href="../../download.html" class="toolbar-link">Download</a></li>
+					<li class="selected"><a href="../../documentation.html" class="toolbar-link">Docs</a></li>
+					<li><a href="../../ecosystem.html" class="toolbar-link">Ecosystem</a></li>
+					<li><a href="../../faq.html" class="toolbar-link">FAQ</a></li>
+				</ul>
+				<ul id="site-nav-links" class="toolbar-links">
+					<li><a href="https://twitter.com/thymeleaf" class="toolbar-link">Twitter</a></li>
+					<li><a href="https://github.com/thymeleaf" class="toolbar-link">GitHub</a></li>
+				</ul>
+			</div>
+		</nav>
+	</div>
+
+	<div class="hero-container fluid-container">
+		<header class="hero-header fluid-block">
+			<div class="hero-header-text">
+				<h1 class="hero-header-title">Thymeleaf</h1>
+			</div>
+			<div class="hero-header-image">
+				<img src="../images/thymeleaf.png" alt="Thymeleaf logo" class="hero-header-logo"/>
+			</div>
+		</header>
+	</div>
+
+	<div class="fluid-container">
+		<main class="fluid-block article">
+			<article>
+				<header>
+					<h1>Thymeleaf + Spring Security integration basics</h1>
+											<div class="article-author">
+							Written by José Miguel Samper &lt;jmiguelsamper AT users.sourceforge.net&gt;
+						</div>
+									</header>
+				<p>Have you switched to Thymeleaf but your login and error pages are still using JSP? In this article we will see how to configure your Spring application to use Thymeleaf for login and error pages.</p>
+<p>All the code seen here comes from a working application. You can view or download the source code from <a href="https://github.com/thymeleaf/thymeleaf/tree/3.1-master/examples/springsecurity6/thymeleaf-examples-springsecurity6-websecurity">its GitHub repo</a>.</p>
+<p><strong>Note</strong> that the Thymeleaf integration packages for Spring Security support both Spring MVC and Spring WebFlux applications since Spring Security 5, but this article will focus on a Spring MVC configuration.</p>
+<section id="prerequisites" class="level2">
+<h2>Prerequisites</h2>
+<p>We assume you are familiar with Thymeleaf and Spring Security, and you have a working application using these technologies. If you don’t know Spring Security, you could be interested on reading the <a href="http://static.springsource.org/spring-security/site/reference.html">Spring Security Documentation</a>.</p>
+</section>
+<section id="login-pages" class="level2">
+<h2>Login pages</h2>
+<p>With Spring Security you could specify any URL to act as a login page, just like:</p>
+<pre class="java"><code>@Override
+protected void configure(final HttpSecurity http) throws Exception {
+    http
+        .formLogin()
+        .loginPage(&quot;/login.html&quot;)
+        .failureUrl(&quot;/login-error.html&quot;)
+      .and()
+        .logout()
+        .logoutSuccessUrl(&quot;/index.html&quot;);
+}</code></pre>
+<p>Now we have to match these pages inside a Spring Controller:</p>
+<pre class="java"><code>@Controller
+public class MainController {
+
+  ...
+
+  // Login form
+  @RequestMapping(&quot;/login.html&quot;)
+  public String login() {
+    return &quot;login.html&quot;;
+  }
+
+  // Login form with error
+  @RequestMapping(&quot;/login-error.html&quot;)
+  public String loginError(Model model) {
+    model.addAttribute(&quot;loginError&quot;, true);
+    return &quot;login.html&quot;;
+  }
+
+}</code></pre>
+<p>Note that we are using the same template <strong>login.html</strong> for both pages, but when there is an error, we set a boolean attribute into the model.</p>
+<p>Our <strong>login.html</strong> template is as follows:</p>
+<pre class="html"><code>&lt;!DOCTYPE html&gt;
+&lt;html xmlns:th=&quot;http://www.thymeleaf.org&quot;&gt;
+  &lt;head&gt;
+    &lt;title&gt;Login page&lt;/title&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;h1&gt;Login page&lt;/h1&gt;
+    &lt;p th:if=&quot;${loginError}&quot; class=&quot;error&quot;&gt;Wrong user or password&lt;/p&gt;
+    &lt;form th:action=&quot;@{/login.html}&quot; method=&quot;post&quot;&gt;
+      &lt;label for=&quot;username&quot;&gt;Username&lt;/label&gt;:
+      &lt;input type=&quot;text&quot; id=&quot;username&quot; name=&quot;username&quot; autofocus=&quot;autofocus&quot; /&gt; &lt;br /&gt;
+      &lt;label for=&quot;password&quot;&gt;Password&lt;/label&gt;:
+      &lt;input type=&quot;password&quot; id=&quot;password&quot; name=&quot;password&quot; /&gt; &lt;br /&gt;
+      &lt;input type=&quot;submit&quot; value=&quot;Log in&quot; /&gt;
+    &lt;/form&gt;
+  &lt;/body&gt;
+&lt;/html&gt;</code></pre>
+</section>
+<section id="error-page" class="level2">
+<h2>Error page</h2>
+<p>We can also configure an error page based on Thymeleaf. In this case Spring Security is not involved at all, we should simply add an <a href="https://spring.io/blog/2013/11/01/exception-handling-in-spring-mvc">ExceptionHandler</a> to our Spring configuration like:</p>
+<pre class="java"><code>@ControllerAdvice
+public class ErrorController {
+
+    private static Logger logger = LoggerFactory.getLogger(ErrorController.class);
+
+    @ExceptionHandler(Throwable.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public String exception(final Throwable throwable, final Model model) {
+        logger.error(&quot;Exception during execution of SpringSecurity application&quot;, throwable);
+        String errorMessage = (throwable != null ? throwable.getMessage() : &quot;Unknown error&quot;);
+        model.addAttribute(&quot;errorMessage&quot;, errorMessage);
+        return &quot;error&quot;;
+    }
+
+}</code></pre>
+<p>The <strong>error.html</strong> template could be like:</p>
+<pre class="html"><code>&lt;!DOCTYPE html&gt;
+&lt;html xmlns:th=&quot;http://www.thymeleaf.org&quot;&gt;
+    &lt;head&gt;
+        &lt;title&gt;Error page&lt;/title&gt;
+        &lt;meta charset=&quot;utf-8&quot; /&gt;
+        &lt;link rel=&quot;stylesheet&quot; href=&quot;css/main.css&quot; th:href=&quot;@{/css/main.css}&quot; /&gt;
+    &lt;/head&gt;
+    &lt;body th:with=&quot;httpStatus=${T(org.springframework.http.HttpStatus).valueOf(#response.status)}&quot;&gt;
+        &lt;h1 th:text=&quot;|${httpStatus} - ${httpStatus.reasonPhrase}|&quot;&gt;404&lt;/h1&gt;
+        &lt;p th:utext=&quot;${errorMessage}&quot;&gt;Error java.lang.NullPointerException&lt;/p&gt;
+        &lt;a href=&quot;index.html&quot; th:href=&quot;@{/index.html}&quot;&gt;Back to Home Page&lt;/a&gt;
+    &lt;/body&gt;
+&lt;/html&gt;</code></pre>
+<p>Note how we are using Spring’s <code>HttpStatus</code> enum in order to obtain detailed information about the response status that has been set (which in this case will always be <code>500</code>, but this allows us to use this <code>error.html</code> in other error reporting scenarios).</p>
+</section>
+<section id="spring-security-dialect" class="level2">
+<h2>Spring Security Dialect</h2>
+<p>In Spring MVC environments, the <a href="https://github.com/thymeleaf/thymeleaf-extras-springsecurity">Spring Security integration module</a> works as a replacement of the <a href="http://docs.spring.io/spring-security/site/docs/4.2.x/reference/html/taglibs.html">Spring security taglib</a>.</p>
+<p>We use this dialect in the example in order to print the logged user credentials and to show different content to different roles.</p>
+<p>The <strong>sec:authorize</strong> attribute renders its content when the attribute expression is evaluated to <strong>true</strong>:</p>
+<pre class="html"><code>&lt;div sec:authorize=&quot;isAuthenticated()&quot;&gt;
+  This content is only shown to authenticated users.
+&lt;/div&gt;
+&lt;div sec:authorize=&quot;hasRole(&#39;ROLE_ADMIN&#39;)&quot;&gt;
+  This content is only shown to administrators.
+&lt;/div&gt;
+&lt;div sec:authorize=&quot;hasRole(&#39;ROLE_USER&#39;)&quot;&gt;
+  This content is only shown to users.
+&lt;/div&gt;</code></pre>
+<p>The <strong>sec:authentication</strong> attribute is used to print logged user name and roles:</p>
+<pre class="html"><code>Logged user: &lt;span sec:authentication=&quot;name&quot;&gt;Bob&lt;/span&gt;
+Roles: &lt;span sec:authentication=&quot;principal.authorities&quot;&gt;[ROLE_USER, ROLE_ADMIN]&lt;/span&gt;</code></pre>
+</section>
+			</article>
+		</main>
+	</div>
+
+	<div class="fluid-container footer-container">
+		<footer class="footer fluid-block">
+			<div class="footer-sections">
+				<h5>On this site</h5>
+				<ul class="footer-sections-links">
+					<li><a href="../../index.html">Home</a></li>
+					<li><a href="../../download.html">Download</a></li>
+					<li><a href="../../documentation.html">Docs</a></li>
+					<li><a href="../../ecosystem.html">Ecosystem</a></li>
+					<li><a href="../../faq.html">FAQ</a></li>
+					<li id="footer-issue-tracking"><a href="../../issuetracking.html">Issue Tracking</a></li>
+					<li><a href="../../team.html">The Thymeleaf Team</a></li>
+					<li><a href="../../whoisusingthymeleaf.html">Who's using Thymeleaf?</a></li>
+				</ul>
+			</div>
+			<div>
+				<h5>External links</h5>
+				<ul class="footer-sections-links">
+					<li><a href="https://twitter.com/thymeleaf">Follow us on Twitter</a></li>
+					<li><a href="https://github.com/thymeleaf">Fork us on GitHub</a></li>
+				</ul>
+			</div>
+		</footer>
+		<div class="copyright fluid-block">Copyright &copy; The Thymeleaf Team</div>
+		<div class="license fluid-block">
+			Thymeleaf is <strong>open source</strong> software distributed under the
+			<a href="https://www.apache.org/licenses/LICENSE-2.0.html">Apache License 2.0</a><br/>
+			This website (excluding the names and logos of Thymeleaf users) is licensed under the <a href="http://creativecommons.org/licenses/by-sa/3.0/">CC BY-SA 3.0 License</a>
+		</div>
+	</div>
+
+</body>
+
+</html>
