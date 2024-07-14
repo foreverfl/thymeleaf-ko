@@ -218,7 +218,7 @@
 <li><a href="#분리된-템플릿의-성능-영향" id="toc-분리된-템플릿의-성능-영향">17.4 분리된 템플릿의 성능 영향</a></li>
 <li><a href="#분리된-로직의-해결" id="toc-분리된-로직의-해결">17.5 분리된 로직의 해결</a></li>
 </ul></li>
-<li><a href="#부록-a-표현식-기본-객체" id="toc-부록-a-표현식-기본-객체">18부록 A: 표현식 기본 객체</a>
+<li><a href="#부록-a-표현식-기본-객체" id="toc-부록-a-표현식-기본-객체">18 부록 A: 표현식 기본 객체</a>
 <ul>
 <li><a href="#기본-객체" id="toc-기본-객체">기본 객체</a></li>
 <li><a href="#요청세션-속성-등을-위한-웹-컨텍스트-네임스페이스" id="toc-요청세션-속성-등을-위한-웹-컨텍스트-네임스페이스">요청/세션 속성 등을 위한 웹 컨텍스트 네임스페이스</a></li>
@@ -2567,40 +2567,67 @@ templateEngine.process(&quot;home&quot;, ctx, writer);</code></pre>
 &lt;/ul&gt;</code></pre>
 <p>우리가 원하는 결과를 얻으려면 <code>th:each</code> 속성이 <code>th:text</code> 전에 실행되어야 한다고 예상할 것입니다. 하지만 HTML/XML 표준은 태그의 속성이 작성되는 순서에 어떤 의미도 부여하지 않기 때문에, 예상대로 작동하도록 하기 위해 속성 자체에 <em>우선순위</em> 메커니즘이 설정되어야 했습니다.</p>
 <p>따라서 모든 Thymeleaf 속성은 태그 내에서 실행되는 순서를 설정하는 숫자 우선순위를 정의합니다. 이 순서는 다음과 같습니다:</p>
-##
-<div class="table-scroller">
-<p>순서 기능 속성</p>
-<hr />
-<pre><code>  1 프래그먼트 포함                     `th:insert`\
-                                       `th:replace`
-
-  2 프래그먼트 반복                     `th:each`
-
-  3 조건부 평가                         `th:if`\
-                                       `th:unless`\
-                                       `th:switch`\
-                                       `th:case`
-
-  4 로컬 변수 정의                      `th:object`\
-                                       `th:with`
-
-  5 일반 속성 수정                      `th:attr`\
-                                       `th:attrprepend`\
-                                       `th:attrappend`
-
-  6 특정 속성 수정                      `th:value`\
-                                       `th:href`\
-                                       `th:src`\
-                                       `...`
-
-  7 텍스트 (태그 본문 수정)              `th:text`\
-                                       `th:utext`
-
-  8 프래그먼트 지정                     `th:fragment`
-
-  9 프래그먼트 제거                     `th:remove`</code></pre>
-<hr />
-</div>
+<table>
+<colgroup>
+<col style="width: 5%" />
+<col style="width: 29%" />
+<col style="width: 64%" />
+</colgroup>
+<thead>
+<tr>
+<th>순서</th>
+<th>기능</th>
+<th>속성</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>프래그먼트 포함</td>
+<td><code>th:insert</code><br><code>th:replace</code></td>
+</tr>
+<tr>
+<td>2</td>
+<td>프래그먼트 반복</td>
+<td><code>th:each</code></td>
+</tr>
+<tr>
+<td>3</td>
+<td>조건부 평가</td>
+<td><code>th:if</code><br><code>th:unless</code><br><code>th:switch</code><br><code>th:case</code></td>
+</tr>
+<tr>
+<td>4</td>
+<td>로컬 변수 정의</td>
+<td><code>th:object</code><br><code>th:with</code></td>
+</tr>
+<tr>
+<td>5</td>
+<td>일반 속성 수정</td>
+<td><code>th:attr</code><br><code>th:attrprepend</code><br><code>th:attrappend</code></td>
+</tr>
+<tr>
+<td>6</td>
+<td>특정 속성 수정</td>
+<td><code>th:value</code><br><code>th:href</code><br><code>th:src</code><br><code>...</code></td>
+</tr>
+<tr>
+<td>7</td>
+<td>텍스트 (태그 본문 수정)</td>
+<td><code>th:text</code><br><code>th:utext</code></td>
+</tr>
+<tr>
+<td>8</td>
+<td>프래그먼트 지정</td>
+<td><code>th:fragment</code></td>
+</tr>
+<tr>
+<td>9</td>
+<td>프래그먼트 제거</td>
+<td><code>th:remove</code></td>
+</tr>
+</tbody>
+</table>
 <p>이 우선순위 메커니즘은 위의 반복 프래그먼트가 속성 위치가 바뀌어도 정확히 동일한 결과를 제공한다는 것을 의미합니다(약간 덜 읽기 쉽긴 하지만):</p>
 <pre class="html"><code>&lt;ul&gt;
   &lt;li th:text=&quot;${item.description}&quot; th:each=&quot;item : ${items}&quot;&gt;
@@ -3438,17 +3465,17 @@ templateEngine.setDecoupledTemplateLogicResolver(decoupledResolver);</code></pre
 </section>
 </section>
 <section id="부록-a-표현식-기본-객체" class="level1">
-<h1>18부록 A: 표현식 기본 객체</h1>
-<p>Some objects and variable maps are always available to be invoked. Let’s see them:</p>
+<h1>18 부록 A: 표현식 기본 객체</h1>
+<p>일부 객체와 변수 맵은 항상 호출할 수 있습니다. 이들을 살펴봅시다:</p>
 <section id="기본-객체" class="level3">
 <h3>기본 객체</h3>
 <ul>
-<li><p><strong>#ctx</strong> : the context object. An implementation of <code>org.thymeleaf.context.IContext</code> or <code>org.thymeleaf.context.IWebContext</code> depending on our environment (standalone or web).</p>
-<p>Note <code>#vars</code> and <code>#root</code> are synomyns for the same object, but using <code>#ctx</code> is recommended.</p></li>
+<li><p><strong>#ctx</strong> : 컨텍스트 객체. 우리의 환경(독립 실행형 또는 웹)에 따라 <code>org.thymeleaf.context.IContext</code> 또는 <code>org.thymeleaf.context.IWebContext</code>의 구현체입니다.</p>
+<p><code>#vars</code>와 <code>#root</code>는 동일한 객체의 동의어이지만, <code>#ctx</code>를 사용하는 것이 권장됩니다.</p></li>
 </ul>
 <pre class="java"><code>/*
  * ======================================================================
- * See javadoc API for class org.thymeleaf.context.IContext
+ * org.thymeleaf.context.IContext 클래스의 javadoc API 참조
  * ======================================================================
  */
 
@@ -3457,7 +3484,7 @@ ${#ctx.variableNames}
 
 /*
  * ======================================================================
- * See javadoc API for class org.thymeleaf.context.IWebContext
+ * org.thymeleaf.context.IWebContext 클래스의 javadoc API 참조
  * ======================================================================
  */
 
@@ -3466,59 +3493,59 @@ ${#ctx.response}
 ${#ctx.session}
 ${#ctx.servletContext}</code></pre>
 <ul>
-<li><strong>#locale</strong> : direct access to the <code>java.util.Locale</code> associated with current request.</li>
+<li><strong>#locale</strong> : 현재 요청과 연관된 <code>java.util.Locale</code>에 직접 접근합니다.</li>
 </ul>
 <pre class="java"><code>${#locale}</code></pre>
 </section>
 <section id="요청세션-속성-등을-위한-웹-컨텍스트-네임스페이스" class="level3">
 <h3>요청/세션 속성 등을 위한 웹 컨텍스트 네임스페이스</h3>
-<p>When using Thymeleaf in a web environment, we can use a series of shortcuts for accessing request parameters, session attributes and application attributes:</p>
+<p>Thymeleaf를 웹 환경에서 사용할 때, 요청 매개변수, 세션 속성 및 애플리케이션 속성에 접근하기 위한 일련의 단축키를 사용할 수 있습니다:</p>
 <blockquote>
-<p>Note these are not <em>context objects</em>, but maps added to the context as variables, so we access them without <code>#</code>. In some way, they act as <em>namespaces</em>.</p>
+<p>이들은 <em>컨텍스트 객체</em>가 아니라 변수로 컨텍스트에 추가된 맵이므로, <code>#</code> 없이 접근합니다. 어떤 면에서 이들은 <em>네임스페이스</em>처럼 작동합니다.</p>
 </blockquote>
 <ul>
-<li><strong>param</strong> : for retrieving request parameters. <code>${param.foo}</code> is a <code>String[]</code> with the values of the <code>foo</code> request parameter, so <code>${param.foo[0]}</code> will normally be used for getting the first value.</li>
+<li><strong>param</strong> : 요청 매개변수를 검색하기 위해 사용합니다. <code>${param.foo}</code>는 <code>foo</code> 요청 매개변수의 값을 가진 <code>String[]</code>이므로, 일반적으로 첫 번째 값을 가져오기 위해 <code>${param.foo[0]}</code>를 사용합니다.</li>
 </ul>
 <pre class="java"><code>/*
  * ============================================================================
- * See javadoc API for class org.thymeleaf.context.WebRequestParamsVariablesMap
+ * org.thymeleaf.context.WebRequestParamsVariablesMap 클래스의 javadoc API 참조
  * ============================================================================
  */
 
-${param.foo}              // Retrieves a String[] with the values of request parameter &#39;foo&#39;
+${param.foo}              // 요청 매개변수 &#39;foo&#39;의 값을 가진 String[]를 검색합니다
 ${param.size()}
 ${param.isEmpty()}
 ${param.containsKey(&#39;foo&#39;)}
 ...</code></pre>
 <ul>
-<li><strong>session</strong> : for retrieving session attributes.</li>
+<li><strong>session</strong> : 세션 속성을 검색하기 위해 사용합니다.</li>
 </ul>
 <pre class="java"><code>/*
  * ======================================================================
- * See javadoc API for class org.thymeleaf.context.WebSessionVariablesMap
+ * org.thymeleaf.context.WebSessionVariablesMap 클래스의 javadoc API 참조
  * ======================================================================
  */
 
-${session.foo}                 // Retrieves the session atttribute &#39;foo&#39;
+${session.foo}                 // 세션 속성 &#39;foo&#39;를 검색합니다
 ${session.size()}
 ${session.isEmpty()}
 ${session.containsKey(&#39;foo&#39;)}
 ...</code></pre>
 <ul>
-<li><strong>application</strong> : for retrieving application/servlet context attributes.</li>
+<li><strong>application</strong> : 애플리케이션/서블릿 컨텍스트 속성을 검색하기 위해 사용합니다.</li>
 </ul>
 <pre class="java"><code>/*
  * =============================================================================
- * See javadoc API for class org.thymeleaf.context.WebServletContextVariablesMap
+ * org.thymeleaf.context.WebServletContextVariablesMap 클래스의 javadoc API 참조
  * =============================================================================
  */
 
-${application.foo}              // Retrieves the ServletContext atttribute &#39;foo&#39;
+${application.foo}              // ServletContext 속성 &#39;foo&#39;를 검색합니다
 ${application.size()}
 ${application.isEmpty()}
 ${application.containsKey(&#39;foo&#39;)}
 ...</code></pre>
-<p>Note there is <strong>no need to specify a namespace for accessing request attributes</strong> (as opposed to <em>request parameters</em>) because all request attributes are automatically added to the context as variables in the context root:</p>
+<p>요청 속성(<em>요청 매개변수</em>와는 달리)에 접근하기 위해 <strong>네임스페이스를 지정할 필요가 없음</strong>에 주목하세요. 모든 요청 속성은 자동으로 컨텍스트 루트의 변수로 컨텍스트에 추가되기 때문입니다:</p>
 <pre class="java"><code>${myRequestAttribute}</code></pre>
 </section>
 </section>
@@ -3527,67 +3554,59 @@ ${application.containsKey(&#39;foo&#39;)}
 <section id="실행-정보" class="level3">
 <h3>실행 정보</h3>
 <ul>
-<li><strong>#execInfo</strong> : expression object providing useful information about the template being processed inside Thymeleaf Standard Expressions.</li>
+<li><strong>#execInfo</strong> : Thymeleaf 표준 표현식 내에서 처리 중인 템플릿에 대한 유용한 정보를 제공하는 표현식 객체입니다.</li>
 </ul>
 <pre class="java"><code>/*
  * ======================================================================
- * See javadoc API for class org.thymeleaf.expression.ExecutionInfo
+ * org.thymeleaf.expression.ExecutionInfo 클래스의 javadoc API 참조
  * ======================================================================
  */
 
 /*
- * Return the name and mode of the &#39;leaf&#39; template. This means the template
- * from where the events being processed were parsed. So if this piece of
- * code is not in the root template &quot;A&quot; but on a fragment being inserted
- * into &quot;A&quot; from another template called &quot;B&quot;, this will return &quot;B&quot; as a
- * name, and B&#39;s mode as template mode.
+ * &#39;리프&#39; 템플릿의 이름과 모드를 반환합니다. 이는 처리 중인 이벤트가 파싱된 템플릿을 의미합니다.
+ * 따라서 이 코드 조각이 루트 템플릿 &quot;A&quot;가 아니라 &quot;B&quot;라는 다른 템플릿에서 &quot;A&quot;로 삽입되는
+ * 프래그먼트에 있다면, 이는 이름으로 &quot;B&quot;를, 모드로 B의 템플릿 모드를 반환할 것입니다.
  */
 ${#execInfo.templateName}
 ${#execInfo.templateMode}
 
 /*
- * Return the name and mode of the &#39;root&#39; template. This means the template
- * that the template engine was originally asked to process. So if this
- * piece of code is not in the root template &quot;A&quot; but on a fragment being
- * inserted into &quot;A&quot; from another template called &quot;B&quot;, this will still
- * return &quot;A&quot; and A&#39;s template mode.
+ * &#39;루트&#39; 템플릿의 이름과 모드를 반환합니다. 이는 템플릿 엔진이 원래 처리하도록 요청받은
+ * 템플릿을 의미합니다. 따라서 이 코드 조각이 루트 템플릿 &quot;A&quot;가 아니라 &quot;B&quot;라는 다른 템플릿에서
+ * &quot;A&quot;로 삽입되는 프래그먼트에 있더라도, 여전히 &quot;A&quot;와 A의 템플릿 모드를 반환할 것입니다.
  */
 ${#execInfo.processedTemplateName}
 ${#execInfo.processedTemplateMode}
 
 /*
- * Return the stacks (actually, List&lt;String&gt; or List&lt;TemplateMode&gt;) of
- * templates being processed. The first element will be the
- * &#39;processedTemplate&#39; (the root one), the last one will be the &#39;leaf&#39;
- * template, and in the middle all the fragments inserted in nested
- * manner to reach the leaf from the root will appear.
+ * 처리 중인 템플릿의 스택(실제로는 List&lt;String&gt; 또는 List&lt;TemplateMode&gt;)을 반환합니다.
+ * 첫 번째 요소는 &#39;processedTemplate&#39;(루트)이 되고, 마지막 요소는 &#39;리프&#39; 템플릿이 되며,
+ * 중간에는 루트에서 리프까지 도달하기 위해 중첩된 방식으로 삽입된 모든 프래그먼트가 나타납니다.
  */
 ${#execInfo.templateNames}
 ${#execInfo.templateModes}
 
 /*
- * Return the stack of templates being processed similarly (and in the
- * same order) to &#39;templateNames&#39; and &#39;templateModes&#39;, but returning
- * a List&lt;TemplateData&gt; with the full template metadata.
+ * &#39;templateNames&#39;와 &#39;templateModes&#39;와 유사하게(그리고 동일한 순서로) 처리 중인
+ * 템플릿의 스택을 반환하지만, 전체 템플릿 메타데이터가 포함된 List&lt;TemplateData&gt;를 반환합니다.
  */
 ${#execInfo.templateStack}</code></pre>
 </section>
 <section id="메시지-messages" class="level3">
 <h3>메시지 (Messages)</h3>
 <ul>
-<li><strong>#messages</strong> : utility methods for obtaining externalized messages inside variables expressions, in the same way as they would be obtained using <code>#{...}</code> syntax.</li>
+<li><strong>#messages</strong> : <code>#{...}</code> 구문을 사용하여 얻을 수 있는 것과 동일한 방식으로 변수 표현식 내에서 외부화된 메시지를 얻기 위한 유틸리티 메서드입니다.</li>
 </ul>
 <pre class="java"><code>/*
  * ======================================================================
- * See javadoc API for class org.thymeleaf.expression.Messages
+ * org.thymeleaf.expression.Messages 클래스의 javadoc API 참조
  * ======================================================================
  */
 
 /*
- * Obtain externalized messages. Can receive a single key, a key plus arguments,
- * or an array/list/set of keys (in which case it will return an array/list/set of
- * externalized messages).
- * If a message is not found, a default message (like &#39;??msgKey??&#39;) is returned.
+ * 외부화된 메시지를 얻습니다. 단일 키, 키와 인수, 또는 키의 배열/리스트/세트를 받을 수 있습니다
+ * (이 경우 외부화된 메시지의 배열/리스트/세트를 반환합니다).
+ * 메시지를 찾을 수 없는 경우, 기본 메시지(예: &#39;??msgKey??&#39;)가 반환됩니다.
  */
 ${#messages.msg(&#39;msgKey&#39;)}
 ${#messages.msg(&#39;msgKey&#39;, param1)}
@@ -3599,8 +3618,8 @@ ${#messages.listMsg(messageKeyList)}
 ${#messages.setMsg(messageKeySet)}
 
 /*
- * Obtain externalized messages or null. Null is returned instead of a default
- * message if a message for the specified key is not found.
+ * 외부화된 메시지를 얻거나 null을 반환합니다. 지정된 키에 대한 메시지를 찾을 수 없는 경우
+ * 기본 메시지 대신 null이 반환됩니다.
  */
 ${#messages.msgOrNull(&#39;msgKey&#39;)}
 ${#messages.msgOrNull(&#39;msgKey&#39;, param1)}
