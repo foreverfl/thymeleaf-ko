@@ -1,0 +1,1374 @@
+<!DOCTYPE html>
+
+<html lang="ko">
+
+<head>
+	<title>튜토리얼: Thymeleaf + Spring</title>
+	<meta charset="utf-8">
+	<meta name="generator" content="pandoc">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+	<meta name="format-detection" content="telephone=no"/>
+
+	<link rel="icon" href="../../images/favicon.ico"/>
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Ubuntu:400,400italic,700,700italic"/>
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Ubuntu+Mono:400,700,400italic,700italic"/>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/2.1.3/normalize.min.css" media="screen"/>
+	<link rel="stylesheet" href="../../styles/thymeleaf.css"/>
+	<link rel="stylesheet" href="../../styles/thymeleaf-tutorials.css"/>
+	<link rel="stylesheet" href="../../styles/thymeleaf-tutorials-screen.css" media="screen"/>
+	<link rel="stylesheet" href="../../styles/thymeleaf-tutorials-print.css" media="print"/>
+
+	<script src="https://unpkg.com/dumb-query-selector@3.0.0/dumb-query-selector.js" defer></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.6.0/components/prism-core.min.js" defer data-manual></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.6.0/components/prism-markup.min.js" defer></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.6.0/components/prism-clike.min.js" defer></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.6.0/components/prism-java.min.js" defer></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.6.0/plugins/line-numbers/prism-line-numbers.min.js" defer></script>
+	<script src="../../scripts/thymeleaf-tutorials.js" defer></script>
+
+</head>
+
+<body class="tutorial">
+
+	<div class="toc-wrapper toolbar-container">
+		<div class="toolbar-menu">
+			<div id="toolbar-location" class="toolbar-menu-location"></div>
+			<button id="site-menu-button" type="button" class="toolbar-menu-button">Doc Contents</button>
+		</div>
+		<nav id="toc">
+			<ul>
+<li><a href="#서문" id="toc-서문">서문</a></li>
+<li><a href="#thymeleaf를-spring과-통합하기" id="toc-thymeleaf를-spring과-통합하기">1 Thymeleaf를 Spring과 통합하기</a></li>
+<li><a href="#spring-표준-방언" id="toc-spring-표준-방언">2 Spring 표준 방언</a></li>
+<li><a href="#뷰와-뷰-리졸버" id="toc-뷰와-뷰-리졸버">3 뷰와 뷰 리졸버</a>
+<ul>
+<li><a href="#spring-mvc의-뷰와-뷰-리졸버" id="toc-spring-mvc의-뷰와-뷰-리졸버">3.1 Spring MVC의 뷰와 뷰 리졸버</a></li>
+<li><a href="#thymeleaf의-뷰와-뷰-리졸버" id="toc-thymeleaf의-뷰와-뷰-리졸버">3.2 Thymeleaf의 뷰와 뷰 리졸버</a></li>
+</ul></li>
+<li><a href="#spring-thyme-씨앗-발아기-관리자seed-starter-manager" id="toc-spring-thyme-씨앗-발아기-관리자seed-starter-manager">4 Spring Thyme 씨앗 발아기 관리자(Seed Starter Manager)</a>
+<ul>
+<li><a href="#개념" id="toc-개념">4.1 개념</a></li>
+<li><a href="#비즈니스-계층" id="toc-비즈니스-계층">4.2 비즈니스 계층</a></li>
+<li><a href="#spring-mvc-구성" id="toc-spring-mvc-구성">4.3 Spring MVC 구성</a></li>
+<li><a href="#컨트롤러" id="toc-컨트롤러">4.4 컨트롤러</a>
+<ul>
+<li><a href="#모델-속성" id="toc-모델-속성">모델 속성</a></li>
+<li><a href="#매핑된-메서드" id="toc-매핑된-메서드">매핑된 메서드</a></li>
+</ul></li>
+<li><a href="#변환-서비스-구성" id="toc-변환-서비스-구성">4.5 변환 서비스 구성</a></li>
+</ul></li>
+<li><a href="#씨앗-발아기-데이터-나열하기" id="toc-씨앗-발아기-데이터-나열하기">5 씨앗 발아기 데이터 나열하기</a></li>
+<li><a href="#폼-만들기" id="toc-폼-만들기">6 폼 만들기</a>
+<ul>
+<li><a href="#커맨드-객체-다루기" id="toc-커맨드-객체-다루기">6.1 커맨드 객체 다루기</a></li>
+<li><a href="#입력-필드" id="toc-입력-필드">6.2 입력 필드</a></li>
+<li><a href="#체크박스-필드" id="toc-체크박스-필드">6.3 체크박스 필드</a></li>
+<li><a href="#라디오-버튼-필드" id="toc-라디오-버튼-필드">6.4 라디오 버튼 필드</a></li>
+<li><a href="#드롭다운리스트-셀렉터" id="toc-드롭다운리스트-셀렉터">6.5 드롭다운/리스트 셀렉터</a></li>
+<li><a href="#동적-필드" id="toc-동적-필드">6.6 동적 필드</a></li>
+</ul></li>
+<li><a href="#유효성-검사와-오류-메시지" id="toc-유효성-검사와-오류-메시지">7 유효성 검사와 오류 메시지</a>
+<ul>
+<li><a href="#필드-오류" id="toc-필드-오류">7.1 필드 오류</a>
+<ul>
+<li><a href="#오류-기반-css-스타일링-단순화-therrorclass" id="toc-오류-기반-css-스타일링-단순화-therrorclass">오류 기반 CSS 스타일링 단순화: <code>th:errorclass</code></a></li>
+</ul></li>
+<li><a href="#모든-오류" id="toc-모든-오류">7.2 모든 오류</a></li>
+<li><a href="#전역-오류" id="toc-전역-오류">7.3 전역 오류</a></li>
+<li><a href="#폼-외부에-오류-표시하기" id="toc-폼-외부에-오류-표시하기">7.4 폼 외부에 오류 표시하기</a></li>
+<li><a href="#풍부한-오류-객체" id="toc-풍부한-오류-객체">7.5 풍부한 오류 객체</a></li>
+</ul></li>
+<li><a href="#아직은-프로토타입입니다" id="toc-아직은-프로토타입입니다">8 아직은 프로토타입입니다!</a></li>
+<li><a href="#변환-서비스" id="toc-변환-서비스">9 변환 서비스</a>
+<ul>
+<li><a href="#구성" id="toc-구성">9.1 구성</a></li>
+<li><a href="#이중-중괄호-구문" id="toc-이중-중괄호-구문">9.1 이중 중괄호 구문</a></li>
+<li><a href="#폼에서의-사용" id="toc-폼에서의-사용">9.2 폼에서의 사용</a></li>
+<li><a href="#conversions-유틸리티-객체" id="toc-conversions-유틸리티-객체">9.3 <code>#conversions</code> 유틸리티 객체</a></li>
+</ul></li>
+<li><a href="#템플릿-조각fragment-렌더링" id="toc-템플릿-조각fragment-렌더링">10 템플릿 조각(Fragment) 렌더링</a>
+<ul>
+<li><a href="#뷰-빈bean에서-조각fragment-지정하기" id="toc-뷰-빈bean에서-조각fragment-지정하기">10.1 뷰 빈(Bean)에서 조각(Fragment) 지정하기</a></li>
+<li><a href="#컨트롤러-반환-값에서-조각-지정하기" id="toc-컨트롤러-반환-값에서-조각-지정하기">10.2 컨트롤러 반환 값에서 조각 지정하기</a></li>
+</ul></li>
+<li><a href="#고급-통합-기능" id="toc-고급-통합-기능">11 고급 통합 기능</a>
+<ul>
+<li><a href="#requestdatavalueprocessor와의-통합" id="toc-requestdatavalueprocessor와의-통합">11.1 <code>RequestDataValueProcessor</code>와의 통합</a></li>
+<li><a href="#컨트롤러에-대한-uri-구축" id="toc-컨트롤러에-대한-uri-구축">11.1 컨트롤러에 대한 URI 구축</a></li>
+</ul></li>
+<li><a href="#spring-webflow-통합" id="toc-spring-webflow-통합">12 Spring WebFlow 통합</a>
+<ul>
+<li><a href="#기본-구성" id="toc-기본-구성">12.1 기본 구성</a></li>
+<li><a href="#spring-webflow에서의-ajax-조각" id="toc-spring-webflow에서의-ajax-조각">12.2 Spring WebFlow에서의 AJAX 조각</a></li>
+</ul></li>
+</ul>
+		</nav>
+	</div>
+
+	<div class="content-wrapper">
+
+		<div class="title-container">
+			<header class="hero-header fluid-block">
+				<div class="hero-header-text">
+					<h1 class="hero-header-title">Thymeleaf</h1>
+				</div>
+				<div class="hero-header-image">
+					<img src="../../images/thymeleaf.png" alt="Thymeleaf logo" class="hero-header-logo"/>
+				</div>
+			</header>
+
+			<div class="tutorial-info fluid-block">
+				<h1 id="tutorial-title" class="tutorial-title">튜토리얼: Thymeleaf + Spring</h1>
+									<div id="tutorial-translator" class="tutorial-metadata">
+						<span class="tutorial-metadata-label">Korean translation by:</span> Myeongkyu Jeon (<a href="https://mogumogu.dev/"><span class="citation" data-cites="mogumogu">@mogumogu</span></a>)
+					</div>
+								<div class="tutorial-metadata">
+					<div id="tutorial-version">
+						<span class="tutorial-metadata-label">Document version:</span> 20230730 - 30 July 2023
+					</div>
+					<div id="project-version">
+						<span class="tutorial-metadata-label">Project version:</span> 3.1.2.RELEASE
+					</div>
+					<div id="project-website">
+						<span class="tutorial-metadata-label">Project web site:</span>
+						<a href="https://www.thymeleaf.org">https://www.thymeleaf.org</a>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div id="content" class="fluid-block">
+			<section id="서문" class="level1">
+<h1>서문</h1>
+<p>이 튜토리얼은 Thymeleaf가 Spring Framework, 특히 (하지만 이에 국한되지 않고) Spring MVC와 어떻게 통합될 수 있는지 설명합니다.</p>
+<p>Thymeleaf는 Spring Framework의 5.x와 6.x 버전 모두에 대한 통합을 제공하며, 이는 <code>thymeleaf-spring5</code>와 <code>thymeleaf-spring6</code>라는 두 개의 별도 라이브러리로 제공됩니다. 이 라이브러리들은 별도의 <code>.jar</code> 파일(<code>thymeleaf-spring5-{version}.jar</code>와 <code>thymeleaf-spring6-{version}.jar</code>)로 패키지되어 있으며, 애플리케이션에서 Thymeleaf의 Spring 통합을 사용하려면 이를 클래스패스에 추가해야 합니다.</p>
+<p>이 튜토리얼의 코드 샘플과 예제 애플리케이션은 <strong>Spring 6.x</strong>와 그에 해당하는 Thymeleaf 통합을 사용하지만, 이 텍스트의 내용은 Spring 5.x에도 유효합니다. 애플리케이션이 Spring 5.x를 사용하는 경우, 코드 샘플에서 <code>org.thymeleaf.spring6</code> 패키지를 <code>org.thymeleaf.spring5</code>로 바꾸기만 하면 됩니다.</p>
+</section>
+<section id="thymeleaf를-spring과-통합하기" class="level1">
+<h1>1 Thymeleaf를 Spring과 통합하기</h1>
+<p>Thymeleaf는 Spring MVC 애플리케이션에서 JSP를 완전히 대체할 수 있는 기능을 갖춘 Spring 통합 세트를 제공합니다.</p>
+<p>이러한 통합을 통해 다음과 같은 작업을 수행할 수 있습니다:</p>
+<ul>
+<li>Spring MVC <code>@Controller</code> 객체의 매핑된 메소드가 JSP와 마찬가지로 Thymeleaf가 관리하는 템플릿으로 포워드하도록 합니다.</li>
+<li>템플릿에서 OGNL 대신 <strong>Spring Expression Language</strong> (Spring EL)를 사용합니다.</li>
+<li>폼 백업 빈 및 결과 바인딩과 완전히 통합된 템플릿에서 폼을 만들며, 속성 편집기, 변환 서비스 및 유효성 검사 오류 처리 사용을 포함합니다.</li>
+<li>일반적인 <code>MessageSource</code> 객체를 통해 Spring이 관리하는 메시지 파일의 국제화 메시지를 표시합니다.</li>
+<li>Spring의 자체 리소스 해결 메커니즘을 사용하여 템플릿을 해결합니다.</li>
+</ul>
+<p>이 튜토리얼을 완전히 이해하려면 먼저 표준 방언을 깊이 있게 설명하는 <em>“Using Thymeleaf”</em> 튜토리얼을 읽어야 합니다.</p>
+</section>
+<section id="spring-표준-방언" class="level1">
+<h1>2 Spring 표준 방언</h1>
+<p>더 쉽고 나은 통합을 위해 Thymeleaf는 Spring과 올바르게 작동하는 데 필요한 모든 기능을 특별히 구현하는 방언을 제공합니다.</p>
+<p>이 특정 방언은 Thymeleaf 표준 방언을 기반으로 하며 <code>org.thymeleaf.spring6.dialect.SpringStandardDialect</code>라는 클래스에서 구현됩니다. 이 클래스는 실제로 <code>org.thymeleaf.standard.StandardDialect</code>를 확장합니다.</p>
+<p>표준 방언에 이미 존재하는 모든 기능 외에도 SpringStandard 방언은 다음과 같은 특정 기능을 도입합니다:</p>
+<ul>
+<li>OGNL 대신 Spring Expression Language (Spring EL 또는 SpEL)를 변수 표현 언어로 사용합니다. 따라서 모든 <code>${...}</code> 및 <code>*{...}</code> 표현식은 Spring의 Expression Language 엔진에 의해 평가됩니다. 또한 Spring EL 컴파일러에 대한 지원도 가능합니다.</li>
+<li>SpringEL의 구문을 사용하여 애플리케이션 컨텍스트의 모든 빈에 액세스할 수 있습니다: <code>${@myBean.doSomething()}</code></li>
+<li>폼 처리를 위한 새로운 속성: <code>th:field</code>, <code>th:errors</code> 및 <code>th:errorclass</code>, 그리고 폼 명령 선택에 사용할 수 있는 <code>th:object</code>의 새로운 구현.</li>
+<li><code>spring:theme</code> JSP 사용자 정의 태그와 동등한 표현 객체 및 메소드인 <code>#themes.code(...)</code>.</li>
+<li><code>spring:mvcUrl(...)</code> JSP 사용자 정의 함수와 동등한 표현 객체 및 메소드인 <code>#mvc.uri(...)</code>.</li>
+</ul>
+<p>대부분의 경우 <em>구성의 일부로 일반 <code>TemplateEngine</code> 객체에서 이 방언을 직접 사용해서는 안 됩니다</em>. 매우 특정한 Spring 통합 요구 사항이 없는 한, 대신 필요한 모든 구성 단계를 자동으로 수행하는 새로운 템플릿 엔진 클래스의 <code>org.thymeleaf.spring6.SpringTemplateEngine</code> 인스턴스를 만들어야 합니다.</p>
+<p>빈 구성 예시:</p>
+<pre class="java"><code>@Bean
+public SpringResourceTemplateResolver templateResolver(){
+    // SpringResourceTemplateResolver는 Spring의 자체 리소스 해결 인프라와 자동으로 통합되므로 매우 권장됩니다.
+    SpringResourceTemplateResolver templateResolver = new SpringResourceTemplateResolver();
+    templateResolver.setApplicationContext(this.applicationContext);
+    templateResolver.setPrefix(&quot;/WEB-INF/templates/&quot;);
+    templateResolver.setSuffix(&quot;.html&quot;);
+    // HTML은 기본값이며, 여기에는 명확성을 위해 추가되었습니다.
+    templateResolver.setTemplateMode(TemplateMode.HTML);
+    // 템플릿 캐시는 기본적으로 true입니다. 수정 시 템플릿을 자동으로 업데이트하려면 false로 설정하세요.
+    templateResolver.setCacheable(true);
+    return templateResolver;
+}
+
+@Bean
+public SpringTemplateEngine templateEngine(){
+    // SpringTemplateEngine은 자동으로 SpringStandardDialect를 적용하고
+    // Spring의 자체 MessageSource 메시지 해결 메커니즘을 활성화합니다.
+    SpringTemplateEngine templateEngine = new SpringTemplateEngine();
+    templateEngine.setTemplateResolver(templateResolver());
+    // Spring 4.2.4 이상에서 SpringEL 컴파일러를 활성화하면
+    // 대부분의 시나리오에서 실행 속도를 높일 수 있지만,
+    // 한 템플릿의 표현식이 다른 데이터 타입에서 재사용되는 특정 경우와
+    // 호환되지 않을 수 있으므로 이 플래그는 더 안전한 하위 호환성을 위해
+    // 기본적으로 &quot;false&quot;입니다.
+    templateEngine.setEnableSpringELCompiler(true);
+    return templateEngine;
+}</code></pre>
+<p>또는 Spring의 XML 기반 구성을 사용하는 경우:</p>
+<pre class="xml"><code>&lt;!-- SpringResourceTemplateResolver는 Spring의 자체 리소스 해결 인프라와 자동으로 통합되므로 매우 권장됩니다. --&gt;
+&lt;bean id=&quot;templateResolver&quot;
+       class=&quot;org.thymeleaf.spring6.templateresolver.SpringResourceTemplateResolver&quot;&gt;
+  &lt;property name=&quot;prefix&quot; value=&quot;/WEB-INF/templates/&quot; /&gt;
+  &lt;property name=&quot;suffix&quot; value=&quot;.html&quot; /&gt;
+  &lt;!-- HTML은 기본값이며, 여기에는 명확성을 위해 추가되었습니다. --&gt;
+  &lt;property name=&quot;templateMode&quot; value=&quot;HTML&quot; /&gt;
+  &lt;!-- 템플릿 캐시는 기본적으로 true입니다. 수정 시 템플릿을 자동으로 업데이트하려면 false로 설정하세요. --&gt;
+  &lt;property name=&quot;cacheable&quot; value=&quot;true&quot; /&gt;
+&lt;/bean&gt;
+
+&lt;!-- SpringTemplateEngine은 자동으로 SpringStandardDialect를 적용하고 --&gt;
+&lt;!-- Spring의 자체 MessageSource 메시지 해결 메커니즘을 활성화합니다. --&gt;
+&lt;bean id=&quot;templateEngine&quot;
+      class=&quot;org.thymeleaf.spring6.SpringTemplateEngine&quot;&gt;
+  &lt;property name=&quot;templateResolver&quot; ref=&quot;templateResolver&quot; /&gt;
+  &lt;!-- SpringEL 컴파일러를 활성화하면 대부분의 시나리오에서 실행 속도를 높일 수 있지만, --&gt;
+  &lt;!-- 한 템플릿의 표현식이 다른 데이터 타입에서 재사용되는 특정 경우와 --&gt;
+  &lt;!-- 호환되지 않을 수 있으므로 이 플래그는 더 안전한 하위 호환성을 위해 --&gt;
+  &lt;!-- 기본적으로 &quot;false&quot;입니다. --&gt;
+  &lt;property name=&quot;enableSpringELCompiler&quot; value=&quot;true&quot; /&gt;
+&lt;/bean&gt;</code></pre>
+</section>
+<section id="뷰와-뷰-리졸버" class="level1">
+<h1>3 뷰와 뷰 리졸버</h1>
+<section id="spring-mvc의-뷰와-뷰-리졸버" class="level2">
+<h2>3.1 Spring MVC의 뷰와 뷰 리졸버</h2>
+<p>Spring MVC에는 템플릿 시스템의 핵심을 구성하는 두 가지 인터페이스가 있습니다:</p>
+<ul>
+<li><code>org.springframework.web.servlet.View</code></li>
+<li><code>org.springframework.web.servlet.ViewResolver</code></li>
+</ul>
+<p>View는 애플리케이션의 페이지를 모델링하고 빈으로 정의하여 동작을 수정하고 미리 정의할 수 있게 합니다. View는 실제 HTML 인터페이스를 렌더링하는 역할을 하며, 일반적으로 Thymeleaf와 같은 템플릿 엔진의 실행을 통해 이루어집니다.</p>
+<p>ViewResolver는 특정 작업 및 로케일에 대한 View 객체를 얻는 역할을 하는 객체입니다. 일반적으로 컨트롤러는 ViewResolver에게 특정 이름(컨트롤러 메소드가 반환하는 문자열)의 뷰로 포워드하도록 요청하고, 그런 다음 애플리케이션의 모든 뷰 리졸버가 순서대로 실행되어 그 중 하나가 해당 뷰를 해결할 수 있을 때까지 진행됩니다. 이 경우 View 객체가 반환되고 HTML 렌더링을 위해 제어권이 넘어갑니다.</p>
+<blockquote>
+<p>애플리케이션의 모든 페이지를 View로 정의할 필요는 없으며, 비표준적이거나 특정 방식으로 구성하고자 하는 동작을 가진 페이지만 View로 정의하면 됩니다(예: 특별한 빈을 연결하는 경우). 일반적으로 ViewResolver가 해당하는 빈이 없는 뷰를 요청받으면, 새로운 View 객체가 임시로 생성되어 반환됩니다.</p>
+</blockquote>
+<p>과거 Spring MVC 애플리케이션에서 JSP+JSTL ViewResolver의 일반적인 구성은 다음과 같았습니다:</p>
+<pre class="xml"><code>&lt;bean class=&quot;org.springframework.web.servlet.view.InternalResourceViewResolver&quot;&gt;
+  &lt;property name=&quot;viewClass&quot; value=&quot;org.springframework.web.servlet.view.JstlView&quot; /&gt;
+  &lt;property name=&quot;prefix&quot; value=&quot;/WEB-INF/jsps/&quot; /&gt;
+  &lt;property name=&quot;suffix&quot; value=&quot;.jsp&quot; /&gt;
+  &lt;property name=&quot;order&quot; value=&quot;2&quot; /&gt;
+  &lt;property name=&quot;viewNames&quot; value=&quot;*jsp&quot; /&gt;
+&lt;/bean&gt;</code></pre>
+<p>속성을 빠르게 살펴보면 구성 방법을 알 수 있습니다:</p>
+<ul>
+<li><code>viewClass</code>는 View 인스턴스의 클래스를 설정합니다. 이는 JSP 리졸버에 필요하지만 Thymeleaf를 사용할 때는 전혀 필요하지 않습니다.</li>
+<li><code>prefix</code>와 <code>suffix</code>는 Thymeleaf의 TemplateResolver 객체에 있는 동일한 이름의 속성과 유사하게 작동합니다.</li>
+<li><code>order</code>는 체인에서 ViewResolver가 쿼리될 순서를 설정합니다.</li>
+<li><code>viewNames</code>를 사용하면 이 ViewResolver가 해결할 뷰 이름을 (와일드카드를 사용하여) 정의할 수 있습니다.</li>
+</ul>
+</section>
+<section id="thymeleaf의-뷰와-뷰-리졸버" class="level2">
+<h2>3.2 Thymeleaf의 뷰와 뷰 리졸버</h2>
+<p>Thymeleaf는 위에서 언급한 두 인터페이스에 대한 구현을 제공합니다:</p>
+<ul>
+<li><code>org.thymeleaf.spring6.view.ThymeleafView</code></li>
+<li><code>org.thymeleaf.spring6.view.ThymeleafViewResolver</code></li>
+</ul>
+<p>이 두 클래스는 컨트롤러 실행 결과로 Thymeleaf 템플릿을 처리하는 역할을 합니다.</p>
+<p>Thymeleaf View Resolver의 구성은 JSP의 구성과 매우 유사합니다:</p>
+<pre class="java"><code>@Bean
+public ThymeleafViewResolver viewResolver(){
+    ThymeleafViewResolver viewResolver = new ThymeleafViewResolver();
+    viewResolver.setTemplateEngine(templateEngine());
+    // 참고: &#39;order&#39;와 &#39;viewNames&#39;는 선택사항입니다
+    viewResolver.setOrder(1);
+    viewResolver.setViewNames(new String[] {&quot;.html&quot;, &quot;.xhtml&quot;});
+    return viewResolver;
+}</code></pre>
+<p>…또는 XML에서:</p>
+<pre class="xml"><code>&lt;bean class=&quot;org.thymeleaf.spring6.view.ThymeleafViewResolver&quot;&gt;
+  &lt;property name=&quot;templateEngine&quot; ref=&quot;templateEngine&quot; /&gt;
+  &lt;!-- 참고: &#39;order&#39;와 &#39;viewNames&#39;는 선택사항입니다 --&gt;
+  &lt;property name=&quot;order&quot; value=&quot;1&quot; /&gt;
+  &lt;property name=&quot;viewNames&quot; value=&quot;*.html,*.xhtml&quot; /&gt;
+&lt;/bean&gt;</code></pre>
+<p><code>templateEngine</code> 파라미터는 물론 이전 장에서 정의한 <code>SpringTemplateEngine</code> 객체입니다. 다른 두 개(<code>order</code>와 <code>viewNames</code>)는 모두 선택사항이며, 이전에 본 JSP ViewResolver와 동일한 의미를 가집니다.</p>
+<p><code>prefix</code>나 <code>suffix</code> 파라미터가 필요하지 않다는 점에 유의하세요. 이는 이미 Template Resolver에 지정되어 있기 때문입니다(이는 다시 Template Engine에 전달됩니다).</p>
+<p>그렇다면 <code>View</code> 빈을 정의하고 여기에 몇 가지 정적 변수를 추가하고 싶다면 어떻게 해야 할까요? 간단합니다. 그냥 <em>프로토타입</em> 빈으로 정의하면 됩니다:</p>
+<pre class="java"><code>@Bean
+@Scope(&quot;prototype&quot;)
+public ThymeleafView mainView() {
+    ThymeleafView view = new ThymeleafView(&quot;main&quot;); // templateName = &#39;main&#39;
+    view.setStaticVariables(
+        Collections.singletonMap(&quot;footer&quot;, &quot;The ACME Fruit Company&quot;));
+    return view;
+}</code></pre>
+<p>이렇게 하면 빈 이름(<code>mainView</code>, 이 경우)으로 선택하여 특정하게 이 뷰 빈을 실행할 수 있게 됩니다.</p>
+</section>
+</section>
+<section id="spring-thyme-씨앗-발아기-관리자seed-starter-manager" class="level1">
+<h1>4 Spring Thyme 씨앗 발아기 관리자(Seed Starter Manager)</h1>
+<p>이 가이드의 현재 및 향후 장에서 보여주는 예제의 소스 코드는 <em>Spring Thyme Seed Starter Manager (STSM)</em> 예제 앱에서 찾을 수 있습니다:</p>
+<ul>
+<li><a href="https://github.com/thymeleaf/thymeleaf/tree/3.1-master/examples/spring5/thymeleaf-examples-spring5-stsm">Spring 5 STSM</a>.</li>
+<li><a href="https://github.com/thymeleaf/thymeleaf/tree/3.1-master/examples/spring6/thymeleaf-examples-spring6-stsm">Spring 6 STSM</a>.</li>
+</ul>
+<section id="개념" class="level2">
+<h2>4.1 개념</h2>
+<p>Thymeleaf에서 우리는 타임의 열렬한 팬이며, 매 봄마다 좋은 흙과 우리가 좋아하는 씨앗으로 씨앗 발아 키트를 준비하고, 스페인 태양 아래에 두고 새로운 식물이 자라기를 인내심 있게 기다립니다.</p>
+<p>하지만 올해는 컨테이너의 각 셀에 어떤 씨앗이 있는지 알기 위해 씨앗 발아 컨테이너에 라벨을 붙이는 것에 지쳐서, Spring MVC와 Thymeleaf를 사용하여 발아기를 카탈로그화하는 데 도움이 되는 애플리케이션을 준비하기로 했습니다: <em>The Spring Thyme SeedStarter Manager</em>.</p>
+<figure>
+<img src="images/thymeleafspring/stsm-view.png" alt="STSM 프론트 페이지" />
+<figcaption aria-hidden="true">STSM 프론트 페이지</figcaption>
+</figure>
+<p><em>Using Thymeleaf</em> 튜토리얼에서 개발한 Good Thymes Virtual Grocery 애플리케이션과 유사하게, STSM은 Spring MVC의 템플릿 엔진으로서 Thymeleaf 통합의 가장 중요한 측면을 예시하는 데 도움이 될 것입니다.</p>
+</section>
+<section id="비즈니스-계층" class="level2">
+<h2>4.2 비즈니스 계층</h2>
+<p>우리 애플리케이션에는 매우 간단한 비즈니스 계층이 필요할 것입니다. 먼저 모델 엔티티를 살펴보겠습니다:</p>
+<figure>
+<img src="images/thymeleafspring/stsm-model.png" alt="STSM 모델" />
+<figcaption aria-hidden="true">STSM 모델</figcaption>
+</figure>
+<p>몇 가지 매우 간단한 서비스 클래스가 필요한 비즈니스 메서드를 제공할 것입니다. 예를 들면:</p>
+<pre class="java"><code>@Service
+public class SeedStarterService {
+
+    @Autowired
+    private SeedStarterRepository seedstarterRepository;
+
+    public List&lt;SeedStarter&gt; findAll() {
+        return this.seedstarterRepository.findAll();
+    }
+
+    public void add(final SeedStarter seedStarter) {
+        this.seedstarterRepository.add(seedStarter);
+    }
+
+}</code></pre>
+<p>그리고:</p>
+<pre class="java"><code>@Service
+public class VarietyService {
+
+    @Autowired
+    private VarietyRepository varietyRepository;
+
+    public List&lt;Variety&gt; findAll() {
+        return this.varietyRepository.findAll();
+    }
+
+    public Variety findById(final Integer id) {
+        return this.varietyRepository.findById(id);
+    }
+
+}</code></pre>
+</section>
+<section id="spring-mvc-구성" class="level2">
+<h2>4.3 Spring MVC 구성</h2>
+<p>다음으로 애플리케이션을 위한 Spring MVC 구성을 설정해야 합니다. 이는 리소스 처리나 어노테이션 스캐닝과 같은 표준 Spring MVC 아티팩트뿐만 아니라 Template Engine과 View Resolver 인스턴스의 생성도 포함할 것입니다.</p>
+<pre class="java"><code>@Configuration
+@EnableWebMvc
+@ComponentScan
+public class SpringWebConfig
+        extends WebMvcConfigurerAdapter implements ApplicationContextAware {
+
+    private ApplicationContext applicationContext;
+
+
+    public SpringWebConfig() {
+        super();
+    }
+
+
+    public void setApplicationContext(final ApplicationContext applicationContext)
+            throws BeansException {
+        this.applicationContext = applicationContext;
+    }
+
+
+
+    /* ******************************************************************* */
+    /*  일반적인 구성 아티팩트                                               */
+    /*  정적 리소스, i18n 메시지, 포맷터 (변환 서비스)                        */
+    /* ******************************************************************* */
+
+    @Override
+    public void addResourceHandlers(final ResourceHandlerRegistry registry) {
+        super.addResourceHandlers(registry);
+        registry.addResourceHandler(&quot;/images/**&quot;).addResourceLocations(&quot;/images/&quot;);
+        registry.addResourceHandler(&quot;/css/**&quot;).addResourceLocations(&quot;/css/&quot;);
+        registry.addResourceHandler(&quot;/js/**&quot;).addResourceLocations(&quot;/js/&quot;);
+    }
+
+    @Bean
+    public ResourceBundleMessageSource messageSource() {
+        ResourceBundleMessageSource messageSource = new ResourceBundleMessageSource();
+        messageSource.setBasename(&quot;Messages&quot;);
+        return messageSource;
+    }
+
+    @Override
+    public void addFormatters(final FormatterRegistry registry) {
+        super.addFormatters(registry);
+        registry.addFormatter(varietyFormatter());
+        registry.addFormatter(dateFormatter());
+    }
+
+    @Bean
+    public VarietyFormatter varietyFormatter() {
+        return new VarietyFormatter();
+    }
+
+    @Bean
+    public DateFormatter dateFormatter() {
+        return new DateFormatter();
+    }
+
+
+
+    /* **************************************************************** */
+    /*  THYMELEAF-특정 아티팩트                                          */
+    /*  TemplateResolver &lt;- TemplateEngine &lt;- ViewResolver              */
+    /* **************************************************************** */
+
+    @Bean
+    public SpringResourceTemplateResolver templateResolver(){
+        // SpringResourceTemplateResolver는 Spring의 자체 리소스 해결 인프라와 자동으로
+        // 통합되며, 이는 매우 권장됩니다.
+        SpringResourceTemplateResolver templateResolver = new SpringResourceTemplateResolver();
+        templateResolver.setApplicationContext(this.applicationContext);
+        templateResolver.setPrefix(&quot;/WEB-INF/templates/&quot;);
+        templateResolver.setSuffix(&quot;.html&quot;);
+        // HTML은 기본값이며, 여기에는 명확성을 위해 추가되었습니다.
+        templateResolver.setTemplateMode(TemplateMode.HTML);
+        // 템플릿 캐시는 기본적으로 true입니다. 수정 시 템플릿을
+        // 자동으로 업데이트하려면 false로 설정하세요.
+        templateResolver.setCacheable(true);
+        return templateResolver;
+    }
+
+    @Bean
+    public SpringTemplateEngine templateEngine(){
+        // SpringTemplateEngine은 자동으로 SpringStandardDialect를 적용하고
+        // Spring의 자체 MessageSource 메시지 해결 메커니즘을 활성화합니다.
+        SpringTemplateEngine templateEngine = new SpringTemplateEngine();
+        templateEngine.setTemplateResolver(templateResolver());
+        // Spring 4.2.4 이상에서 SpringEL 컴파일러를 활성화하면
+        // 대부분의 시나리오에서 실행 속도를 높일 수 있지만,
+        // 한 템플릿의 표현식이 다른 데이터 타입에서 재사용되는 특정 경우와
+        // 호환되지 않을 수 있으므로 이 플래그는 더 안전한 하위 호환성을 위해
+        // 기본적으로 &quot;false&quot;입니다.
+        templateEngine.setEnableSpringELCompiler(true);
+        return templateEngine;
+    }
+
+
+    @Bean
+    public ThymeleafViewResolver viewResolver(){
+        ThymeleafViewResolver viewResolver = new ThymeleafViewResolver();
+        viewResolver.setTemplateEngine(templateEngine());
+        return viewResolver;
+    }
+
+}</code></pre>
+</section>
+<section id="컨트롤러" class="level2">
+<h2>4.4 컨트롤러</h2>
+<p>물론, 우리 애플리케이션을 위한 컨트롤러도 필요할 것입니다. STSM은 씨앗 발아기 목록과 새로운 발아기를 추가하기 위한 폼이 있는 웹 페이지 하나만 포함할 것이므로, 모든 서버 상호작용을 위해 하나의 컨트롤러 클래스만 작성할 것입니다:</p>
+<pre class="java"><code>@Controller
+public class SeedStarterMngController {
+
+    @Autowired
+    private VarietyService varietyService;
+
+    @Autowired
+    private SeedStarterService seedStarterService;
+
+    ...
+
+}</code></pre>
+<p>이제 이 컨트롤러 클래스에 무엇을 추가할 수 있는지 살펴보겠습니다.</p>
+<section id="모델-속성" class="level3">
+<h3>모델 속성</h3>
+<p>먼저 페이지에서 필요한 몇 가지 모델 속성을 추가할 것입니다:</p>
+<pre class="java"><code>@ModelAttribute(&quot;allTypes&quot;)
+public List&lt;Type&gt; populateTypes() {
+    return Arrays.asList(Type.ALL);
+}
+
+@ModelAttribute(&quot;allFeatures&quot;)
+public List&lt;Feature&gt; populateFeatures() {
+    return Arrays.asList(Feature.ALL);
+}
+
+@ModelAttribute(&quot;allVarieties&quot;)
+public List&lt;Variety&gt; populateVarieties() {
+    return this.varietyService.findAll();
+}
+
+@ModelAttribute(&quot;allSeedStarters&quot;)
+public List&lt;SeedStarter&gt; populateSeedStarters() {
+    return this.seedStarterService.findAll();
+}</code></pre>
+</section>
+<section id="매핑된-메서드" class="level3">
+<h3>매핑된 메서드</h3>
+<p>그리고 이제 컨트롤러의 가장 중요한 부분인 매핑된 메서드입니다: 폼 페이지를 보여주는 메서드 하나와 새로운 <code>SeedStarter</code> 객체를 추가하는 처리를 위한 메서드 하나입니다.</p>
+<pre class="java"><code>@RequestMapping({&quot;/&quot;,&quot;/seedstartermng&quot;})
+public String showSeedstarters(final SeedStarter seedStarter) {
+    seedStarter.setDatePlanted(Calendar.getInstance().getTime());
+    return &quot;seedstartermng&quot;;
+}
+
+@RequestMapping(value=&quot;/seedstartermng&quot;, params={&quot;save&quot;})
+public String saveSeedstarter(
+        final SeedStarter seedStarter, final BindingResult bindingResult, final ModelMap model) {
+    if (bindingResult.hasErrors()) {
+        return &quot;seedstartermng&quot;;
+    }
+    this.seedStarterService.add(seedStarter);
+    model.clear();
+    return &quot;redirect:/seedstartermng&quot;;
+}</code></pre>
+</section>
+</section>
+<section id="변환-서비스-구성" class="level2">
+<h2>4.5 변환 서비스 구성</h2>
+<p>뷰 레이어에서 <code>Date</code>와 <code>Variety</code> 객체를 쉽게 포맷팅할 수 있도록 하기 위해, 우리는 애플리케이션을 구성하여 Spring <code>ConversionService</code> 객체가 생성되고 초기화되도록 했습니다(우리가 확장한 <code>WebMvcConfigurerAdapter</code>에 의해). 이 객체는 우리가 필요로 하는 두 개의 <em>포맷터</em> 객체로 초기화됩니다. 다시 한 번 살펴보겠습니다:</p>
+<pre class="java"><code>@Override
+public void addFormatters(final FormatterRegistry registry) {
+    super.addFormatters(registry);
+    registry.addFormatter(varietyFormatter());
+    registry.addFormatter(dateFormatter());
+}
+
+@Bean
+public VarietyFormatter varietyFormatter() {
+    return new VarietyFormatter();
+}
+
+@Bean
+public DateFormatter dateFormatter() {
+    return new DateFormatter();
+}</code></pre>
+<p>Spring <em>포맷터</em>는 <code>org.springframework.format.Formatter</code> 인터페이스의 구현체입니다. Spring 변환 인프라가 어떻게 작동하는지에 대한 더 자세한 정보는 <a href="http://docs.spring.io/spring/docs/4.3.x/spring-framework-reference/html/validation.html#core-convert">spring.io</a>의 문서를 참조하세요.</p>
+<p><code>DateFormatter</code>를 살펴보겠습니다. 이는 <code>Messages.properties</code>의 <code>date.format</code> 메시지 키에 있는 포맷 문자열에 따라 날짜를 포맷팅합니다:</p>
+<pre class="java"><code>public class DateFormatter implements Formatter&lt;Date&gt; {
+
+    @Autowired
+    private MessageSource messageSource;
+
+
+    public DateFormatter() {
+        super();
+    }
+
+    public Date parse(final String text, final Locale locale) throws ParseException {
+        final SimpleDateFormat dateFormat = createDateFormat(locale);
+        return dateFormat.parse(text);
+    }
+
+    public String print(final Date object, final Locale locale) {
+        final SimpleDateFormat dateFormat = createDateFormat(locale);
+        return dateFormat.format(object);
+    }
+
+    private SimpleDateFormat createDateFormat(final Locale locale) {
+        final String format = this.messageSource.getMessage(&quot;date.format&quot;, null, locale);
+        final SimpleDateFormat dateFormat = new SimpleDateFormat(format);
+        dateFormat.setLenient(false);
+        return dateFormat;
+    }
+
+}</code></pre>
+<p><code>VarietyFormatter</code>는 우리의 <code>Variety</code> 엔티티와 폼에서 사용하고자 하는 방식(기본적으로 <code>id</code> 필드 값) 사이를 자동으로 변환합니다:</p>
+<pre class="java"><code>public class VarietyFormatter implements Formatter&lt;Variety&gt; {
+
+    @Autowired
+    private VarietyService varietyService;
+
+
+    public VarietyFormatter() {
+        super();
+    }
+
+    public Variety parse(final String text, final Locale locale) throws ParseException {
+        final Integer varietyId = Integer.valueOf(text);
+        return this.varietyService.findById(varietyId);
+    }
+
+
+    public String print(final Variety object, final Locale locale) {
+        return (object != null ? object.getId().toString() : &quot;&quot;);
+    }
+
+}</code></pre>
+<p>이러한 포맷터가 우리의 데이터 표시 방식에 어떤 영향을 미치는지 나중에 더 자세히 알아보겠습니다.</p>
+</section>
+</section>
+<section id="씨앗-발아기-데이터-나열하기" class="level1">
+<h1>5 씨앗 발아기 데이터 나열하기</h1>
+<p>우리의 <code>/WEB-INF/templates/seedstartermng.html</code> 페이지가 처음 보여줄 것은 현재 저장된 씨앗 발아기의 목록입니다. 이를 위해 우리는 몇 가지 외부화된 메시지와 모델 속성에 대한 표현식 평가가 필요할 것입니다. 다음과 같습니다:</p>
+<pre class="html"><code>&lt;div class=&quot;seedstarterlist&quot; th:unless=&quot;${#lists.isEmpty(allSeedStarters)}&quot;&gt;
+  &lt;h2 th:text=&quot;#{title.list}&quot;&gt;List of Seed Starters&lt;/h2&gt;
+
+  &lt;table&gt;
+    &lt;thead&gt;
+      &lt;tr&gt;
+        &lt;th th:text=&quot;#{seedstarter.datePlanted}&quot;&gt;Date Planted&lt;/th&gt;
+        &lt;th th:text=&quot;#{seedstarter.covered}&quot;&gt;Covered&lt;/th&gt;
+        &lt;th th:text=&quot;#{seedstarter.type}&quot;&gt;Type&lt;/th&gt;
+        &lt;th th:text=&quot;#{seedstarter.features}&quot;&gt;Features&lt;/th&gt;
+        &lt;th th:text=&quot;#{seedstarter.rows}&quot;&gt;Rows&lt;/th&gt;
+      &lt;/tr&gt;
+    &lt;/thead&gt;
+    &lt;tbody&gt;
+      &lt;tr th:each=&quot;sb : ${allSeedStarters}&quot;&gt;
+        &lt;td th:text=&quot;${{sb.datePlanted}}&quot;&gt;13/01/2011&lt;/td&gt;
+        &lt;td th:text=&quot;#{|bool.${sb.covered}|}&quot;&gt;yes&lt;/td&gt;
+        &lt;td th:text=&quot;#{|seedstarter.type.${sb.type}|}&quot;&gt;Wireframe&lt;/td&gt;
+        &lt;td
+          th:text=&quot;${#strings.arrayJoin(
+                           #messages.arrayMsg(
+                               #strings.arrayPrepend(sb.features,&#39;seedstarter.feature.&#39;)),
+                           &#39;, &#39;)}&quot;
+        &gt;
+          Electric Heating, Turf
+        &lt;/td&gt;
+        &lt;td&gt;
+          &lt;table&gt;
+            &lt;tbody&gt;
+              &lt;tr th:each=&quot;row,rowStat : ${sb.rows}&quot;&gt;
+                &lt;td th:text=&quot;${rowStat.count}&quot;&gt;1&lt;/td&gt;
+                &lt;td th:text=&quot;${row.variety.name}&quot;&gt;Thymus Thymi&lt;/td&gt;
+                &lt;td th:text=&quot;${row.seedsPerCell}&quot;&gt;12&lt;/td&gt;
+              &lt;/tr&gt;
+            &lt;/tbody&gt;
+          &lt;/table&gt;
+        &lt;/td&gt;
+      &lt;/tr&gt;
+    &lt;/tbody&gt;
+  &lt;/table&gt;
+&lt;/div&gt;</code></pre>
+<p>여기에는 볼 것이 많습니다. 각 부분을 따로 살펴보겠습니다.</p>
+<p>먼저, 이 섹션은 씨앗 발아기가 있는 경우에만 표시됩니다. 이는 th:unless 속성과 <code>#lists.isEmpty(...)</code> 함수를 사용하여 달성합니다.</p>
+<pre class="html"><code>&lt;div
+  class=&quot;seedstarterlist&quot;
+  th:unless=&quot;${#lists.isEmpty(allSeedStarters)}&quot;
+&gt;&lt;/div&gt;</code></pre>
+<p><code>#lists</code>와 같은 모든 유틸리티 객체는 표준 방언의 OGNL 표현식에서와 마찬가지로 Spring EL 표현식에서도 사용 가능하다는 점에 주목하세요.</p>
+<p>다음으로 볼 수 있는 것은 많은 국제화(외부화)된 텍스트입니다. 예를 들면:</p>
+<pre class="html"><code>&lt;h2 th:text=&quot;#{title.list}&quot;&gt;List of Seed Starters&lt;/h2&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th th:text=&quot;#{seedstarter.datePlanted}&quot;&gt;Date Planted&lt;/th&gt;
+      &lt;th th:text=&quot;#{seedstarter.covered}&quot;&gt;Covered&lt;/th&gt;
+      &lt;th th:text=&quot;#{seedstarter.type}&quot;&gt;Type&lt;/th&gt;
+      &lt;th th:text=&quot;#{seedstarter.features}&quot;&gt;Features&lt;/th&gt;
+      &lt;th th:text=&quot;#{seedstarter.rows}&quot;&gt;Rows&lt;/th&gt;
+      ...
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+&lt;/table&gt;</code></pre>
+<p>이것이 Spring MVC 애플리케이션이므로, 우리는 이미 Spring 구성에서 <code>MessageSource</code> 빈을 정의했습니다(<code>MessageSource</code> 객체는 Spring MVC에서 외부화된 텍스트를 관리하는 표준 방법입니다):</p>
+<pre class="java"><code>@Bean
+public ResourceBundleMessageSource messageSource() {
+    ResourceBundleMessageSource messageSource = new ResourceBundleMessageSource();
+    messageSource.setBasename(&quot;Messages&quot;);
+    return messageSource;
+}</code></pre>
+<p>…그리고 그 <code>basename</code> 속성은 우리의 클래스패스에 <code>Messages_es.properties</code>나 <code>Messages_en.properties</code>와 같은 파일이 있을 것임을 나타냅니다. 스페인어 버전을 살펴보겠습니다:</p>
+<pre class="properties"><code>title.list=Lista de semilleros
+
+date.format=dd/MM/yyyy
+bool.true=sí
+bool.false=no
+
+seedstarter.datePlanted=Fecha de plantación
+seedstarter.covered=Cubierto
+seedstarter.type=Tipo
+seedstarter.features=Características
+seedstarter.rows=Filas
+
+seedstarter.type.WOOD=Madera
+seedstarter.type.PLASTIC=Plástico
+
+seedstarter.feature.SEEDSTARTER_SPECIFIC_SUBSTRATE=Sustrato específico para semilleros
+seedstarter.feature.FERTILIZER=Fertilizante
+seedstarter.feature.PH_CORRECTOR=Corrector de PH</code></pre>
+<p>표 목록의 첫 번째 열에는 씨앗 발아기가 준비된 날짜를 표시할 것입니다. 하지만 <strong>우리의 <code>DateFormatter</code>에서 정의한 방식으로 포맷팅하여 표시할 것입니다</strong>. 이를 위해 우리는 이중 중괄호 구문(<code>${{...}}</code>)을 사용할 것입니다. 이는 자동으로 Spring Conversion Service를 적용하며, 여기에는 우리가 구성에 등록한 <code>DateFormatter</code>가 포함됩니다.</p>
+<pre class="html"><code>&lt;td th:text=&quot;${{sb.datePlanted}}&quot;&gt;13/01/2011&lt;/td&gt;</code></pre>
+<p>다음은 씨앗 발아기 컨테이너가 덮개로 덮여 있는지 여부를 표시하는 것입니다. 이는 boolean covered 빈 속성의 값을 리터럴 대체 표현식을 사용하여 국제화된 “예” 또는 “아니오”로 변환합니다:</p>
+<pre class="html"><code>&lt;td th:text=&quot;#{|bool.${sb.covered}|}&quot;&gt;yes&lt;/td&gt;</code></pre>
+<p>이제 씨앗 발아기 컨테이너의 종류를 표시해야 합니다. Type은 두 개의 값(<code>WOOD</code>와 <code>PLASTIC</code>)을 가진 Java enum이며, 이것이 우리가 <code>Messages</code> 파일에 <code>seedstarter.type.WOOD</code>와 <code>seedstarter.type.PLASTIC</code>이라는 두 개의 속성을 정의한 이유입니다.</p>
+<p>하지만 타입의 국제화된 이름을 얻기 위해, 우리는 표현식을 통해 enum 값에 <code>seedstarter.type.</code> 접두사를 추가해야 하며, 그 결과를 메시지 키로 사용할 것입니다:</p>
+<pre class="html"><code>&lt;td th:text=&quot;#{|seedstarter.type.${sb.type}|}&quot;&gt;Wireframe&lt;/td&gt;</code></pre>
+<p>이 목록에서 가장 어려운 부분은 <em>특징</em> 열입니다. 여기서는 우리 컨테이너의 <code>Feature</code> enum의 배열 형태로 제공되는 모든 특징을 쉼표로 구분하여 표시하고자 합니다. 예를 들면 <em>“Electric Heating, Turf”</em>와 같이 말입니다.</p>
+<p>이것이 특히 어려운 이유는 이 enum 값들도 Type과 마찬가지로 외부화되어야 하기 때문입니다. 따라서 처리 과정은 다음과 같습니다:</p>
+<ol type="1">
+<li><code>features</code> 배열의 모든 요소에 해당 접두사를 붙입니다.</li>
+<li>1단계에서 얻은 모든 키에 해당하는 외부화된 메시지를 얻습니다.</li>
+<li>2단계에서 얻은 모든 메시지를 쉼표를 구분자로 사용하여 결합합니다.</li>
+</ol>
+<p>이를 위해 다음과 같은 코드를 만듭니다:</p>
+<pre class="html"><code>&lt;td
+  th:text=&quot;${#strings.arrayJoin(
+                   #messages.arrayMsg(
+                       #strings.arrayPrepend(sb.features,&#39;seedstarter.feature.&#39;)),
+                   &#39;, &#39;)}&quot;
+&gt;
+  Electric Heating, Turf
+&lt;/td&gt;</code></pre>
+<p>우리 목록의 마지막 열은 실제로 꽤 간단할 것입니다. 컨테이너의 각 행의 내용을 보여주는 중첩 테이블이 있더라도 말입니다:</p>
+<pre class="html"><code>&lt;td&gt;
+  &lt;table&gt;
+    &lt;tbody&gt;
+      &lt;tr th:each=&quot;row,rowStat : ${sb.rows}&quot;&gt;
+        &lt;td th:text=&quot;${rowStat.count}&quot;&gt;1&lt;/td&gt;
+        &lt;td th:text=&quot;${row.variety.name}&quot;&gt;Thymus Thymi&lt;/td&gt;
+        &lt;td th:text=&quot;${row.seedsPerCell}&quot;&gt;12&lt;/td&gt;
+      &lt;/tr&gt;
+    &lt;/tbody&gt;
+  &lt;/table&gt;
+&lt;/td&gt;</code></pre>
+</section>
+<section id="폼-만들기" class="level1">
+<h1>6 폼 만들기</h1>
+<section id="커맨드-객체-다루기" class="level2">
+<h2>6.1 커맨드 객체 다루기</h2>
+<p><em>커맨드 객체</em>는 Spring MVC가 폼 백업 빈에 부여하는 이름으로, 폼의 필드를 모델링하고 브라우저 측에서 사용자가 입력한 값을 설정하고 얻기 위해 프레임워크가 사용할 getter와 setter 메서드를 제공하는 객체를 말합니다.</p>
+<p>Thymeleaf는 <code>&lt;form&gt;</code> 태그에 <code>th:object</code> 속성을 사용하여 커맨드 객체를 지정해야 합니다:</p>
+<pre class="html"><code>&lt;form
+  action=&quot;#&quot;
+  th:action=&quot;@{/seedstartermng}&quot;
+  th:object=&quot;${seedStarter}&quot;
+  method=&quot;post&quot;
+&gt;
+  ...
+&lt;/form&gt;</code></pre>
+<p>이는 <code>th:object</code>의 다른 용도와 일관되지만, 실제로 이 특정 시나리오는 Spring MVC의 인프라와 올바르게 통합하기 위해 몇 가지 제한사항을 추가합니다:</p>
+<ul>
+<li>폼 태그의 <code>th:object</code> 속성 값은 모델 속성의 이름만을 지정하는 변수 표현식(<code>${...}</code>)이어야 하며, 속성 탐색은 허용되지 않습니다. 이는 <code>${seedStarter}</code>와 같은 표현식은 유효하지만 <code>${seedStarter.data}</code>는 유효하지 않다는 것을 의미합니다.</li>
+<li><code>&lt;form&gt;</code> 태그 내에서는 다른 <code>th:object</code> 속성을 지정할 수 없습니다. 이는 HTML 폼이 중첩될 수 없다는 사실과 일치합니다.</li>
+</ul>
+</section>
+<section id="입력-필드" class="level2">
+<h2>6.2 입력 필드</h2>
+<p>이제 폼에 입력 필드를 추가하는 방법을 살펴보겠습니다:</p>
+<pre class="html"><code>&lt;input type=&quot;text&quot; th:field=&quot;*{datePlanted}&quot; /&gt;</code></pre>
+<p>보시다시피, 여기에 새로운 속성인 <code>th:field</code>를 소개하고 있습니다. 이는 Spring MVC 통합을 위한 매우 중요한 기능입니다. 왜냐하면 이 속성이 입력을 폼 백업 빈의 속성과 바인딩하는 모든 복잡한 작업을 수행하기 때문입니다. Spring MVC의 JSP 태그 라이브러리에서 <form:input> 태그의 path 속성과 동등한 것으로 볼 수 있습니다.</p>
+<p><code>th:field</code> 속성은 <code>&lt;input&gt;</code>, <code>&lt;select&gt;</code> 또는 <code>&lt;textarea&gt;</code> 태그에 부착되었는지 (그리고 <code>&lt;input&gt;</code> 태그의 특정 유형에 따라서도) 다르게 동작합니다. 이 경우(<code>input[type=text]</code>)에는 위의 코드 줄은 다음과 유사합니다:</p>
+<pre class="html"><code>&lt;input
+  type=&quot;text&quot;
+  id=&quot;datePlanted&quot;
+  name=&quot;datePlanted&quot;
+  th:value=&quot;*{datePlanted}&quot;
+/&gt;</code></pre>
+<p>…하지만 실제로는 이보다 조금 더 많은 것을 수행합니다. <code>th:field</code>는 등록된 Spring Conversion Service를 적용하며, 여기에는 우리가 이전에 본 <code>DateFormatter</code>도 포함됩니다(필드 표현식이 이중 대괄호로 묶여 있지 않더라도). 이 덕분에 날짜가 올바르게 포맷팅되어 표시됩니다.</p>
+<p><code>th:field</code> 속성의 값은 선택 표현식(<code>*{...}</code>)이어야 합니다. 이는 폼 백업 빈에서 평가되고 컨텍스트 변수(또는 Spring MVC 용어로 모델 속성)에서 평가되지 않기 때문에 의미가 있습니다.</p>
+<p><code>th:object</code>의 표현식과는 달리, 이 표현식들은 속성 탐색을 포함할 수 있습니다(사실 <code>&lt;form:input&gt;</code> JSP 태그의 path 속성에 허용되는 모든 표현식이 여기서도 허용됩니다).</p>
+<p><code>th:field</code>는 <code>&lt;input type="datetime" ... /&gt;</code>, <code>&lt;input type="color" ... /&gt;</code> 등 HTML5에서 도입된 새로운 유형의 <code>&lt;input&gt;</code> 요소도 이해한다는 점에 주목하세요. 이는 Spring MVC에 완전한 HTML5 지원을 효과적으로 추가합니다.</p>
+</section>
+<section id="체크박스-필드" class="level2">
+<h2>6.3 체크박스 필드</h2>
+<p><code>th:field</code>를 사용하여 체크박스 입력도 정의할 수 있습니다. HTML 페이지의 예를 살펴보겠습니다:</p>
+<pre class="html"><code>&lt;div&gt;
+  &lt;label th:for=&quot;${#ids.next(&#39;covered&#39;)}&quot; th:text=&quot;#{seedstarter.covered}&quot;
+    &gt;Covered&lt;/label
+  &gt;
+  &lt;input type=&quot;checkbox&quot; th:field=&quot;*{covered}&quot; /&gt;
+&lt;/div&gt;</code></pre>
+<p>여기에는 체크박스 자체 외에도 외부화된 레이블과 체크박스 입력의 id 속성에 적용될 값을 얻기 위한 <code>#ids.next('covered')</code> 함수의 사용과 같은 세밀한 내용이 있습니다.</p>
+<p>왜 이 필드의 id 속성을 동적으로 생성해야 할까요? 체크박스는 잠재적으로 다중 값을 가질 수 있기 때문에, 동일한 속성에 대한 각 체크박스 입력이 서로 다른 id 값을 가지도록 하기 위해 id 값에는 항상 시퀀스 번호가 접미사로 붙습니다(내부적으로 <code>#ids.seq(...)</code> 함수를 사용합니다).</p>
+<p>이를 더 쉽게 이해하려면 이러한 다중 값 체크박스 필드를 살펴보겠습니다:</p>
+<pre class="html"><code>&lt;ul&gt;
+  &lt;li th:each=&quot;feat : ${allFeatures}&quot;&gt;
+    &lt;input type=&quot;checkbox&quot; th:field=&quot;*{features}&quot; th:value=&quot;${feat}&quot; /&gt;
+    &lt;label
+      th:for=&quot;${#ids.prev(&#39;features&#39;)}&quot;
+      th:text=&quot;#{${&#39;seedstarter.feature.&#39; + feat}}&quot;
+      &gt;Heating&lt;/label
+    &gt;
+  &lt;/li&gt;
+&lt;/ul&gt;</code></pre>
+<p>이번에는 <code>th:value</code> 속성을 추가했습니다. 왜냐하면 features 필드는 covered와 같은 불리언이 아니라 값의 배열이기 때문입니다.</p>
+<p>이 코드로 생성된 HTML 출력을 살펴보겠습니다:</p>
+<pre class="html"><code>&lt;ul&gt;
+  &lt;li&gt;
+    &lt;input
+      id=&quot;features1&quot;
+      name=&quot;features&quot;
+      type=&quot;checkbox&quot;
+      value=&quot;SEEDSTARTER_SPECIFIC_SUBSTRATE&quot;
+    /&gt;
+    &lt;input name=&quot;_features&quot; type=&quot;hidden&quot; value=&quot;on&quot; /&gt;
+    &lt;label for=&quot;features1&quot;&gt;Seed starter-specific substrate&lt;/label&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;input id=&quot;features2&quot; name=&quot;features&quot; type=&quot;checkbox&quot; value=&quot;FERTILIZER&quot; /&gt;
+    &lt;input name=&quot;_features&quot; type=&quot;hidden&quot; value=&quot;on&quot; /&gt;
+    &lt;label for=&quot;features2&quot;&gt;Fertilizer used&lt;/label&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;input
+      id=&quot;features3&quot;
+      name=&quot;features&quot;
+      type=&quot;checkbox&quot;
+      value=&quot;PH_CORRECTOR&quot;
+    /&gt;
+    &lt;input name=&quot;_features&quot; type=&quot;hidden&quot; value=&quot;on&quot; /&gt;
+    &lt;label for=&quot;features3&quot;&gt;PH Corrector used&lt;/label&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;</code></pre>
+<p>여기서 각 입력의 id 속성에 시퀀스 접미사가 추가되는 것을 볼 수 있으며, <code>#ids.prev(...)</code> 함수를 사용하여 특정 입력 id에 대해 생성된 마지막 시퀀스 값을 검색할 수 있습니다.</p>
+<blockquote>
+<p><code>name="_features"</code>를 가진 숨겨진 입력에 대해 걱정하지 마세요: 이들은 브라우저가 폼 제출 시 서버로 체크되지 않은 체크박스 값을 보내지 않는 문제를 피하기 위해 자동으로 추가됩니다.</p>
+</blockquote>
+<p>또한 폼 백업 빈의 features 속성에 선택된 값이 있었다면, <code>th:field</code>가 이를 처리하여 해당 입력 태그에 <code>checked="checked"</code> 속성을 추가했을 것입니다.</p>
+</section>
+<section id="라디오-버튼-필드" class="level2">
+<h2>6.4 라디오 버튼 필드</h2>
+<p>라디오 버튼 필드는 불리언이 아닌(다중 값) 체크박스와 유사한 방식으로 지정됩니다 —물론 다중 값이 아니라는 점을 제외하고:</p>
+<pre class="html"><code>&lt;ul&gt;
+  &lt;li th:each=&quot;ty : ${allTypes}&quot;&gt;
+    &lt;input type=&quot;radio&quot; th:field=&quot;*{type}&quot; th:value=&quot;${ty}&quot; /&gt;
+    &lt;label
+      th:for=&quot;${#ids.prev(&#39;type&#39;)}&quot;
+      th:text=&quot;#{${&#39;seedstarter.type.&#39; + ty}}&quot;
+      &gt;Wireframe&lt;/label
+    &gt;
+  &lt;/li&gt;
+&lt;/ul&gt;</code></pre>
+</section>
+<section id="드롭다운리스트-셀렉터" class="level2">
+<h2>6.5 드롭다운/리스트 셀렉터</h2>
+<p>셀렉트 필드는 두 부분으로 구성됩니다: <code>&lt;select&gt;</code> 태그와 그 안에 중첩된 <code>&lt;option&gt;</code> 태그들입니다. 이런 종류의 필드를 생성할 때는 <code>&lt;select&gt;</code> 태그에만 <code>th:field</code> 속성을 포함해야 하지만, 중첩된 <code>&lt;option&gt;</code> 태그의 <code>th:value</code> 속성은 매우 중요합니다. 이 속성들이 현재 선택된 옵션을 알 수 있는 수단을 제공하기 때문입니다(불리언이 아닌 체크박스와 라디오 버튼과 유사한 방식으로).</p>
+<p>type 필드를 드롭다운 셀렉트로 다시 만들어 보겠습니다:</p>
+<pre class="html"><code>&lt;select th:field=&quot;*{type}&quot;&gt;
+  &lt;option
+    th:each=&quot;type : ${allTypes}&quot;
+    th:value=&quot;${type}&quot;
+    th:text=&quot;#{${&#39;seedstarter.type.&#39; + type}}&quot;
+  &gt;
+    Wireframe
+  &lt;/option&gt;
+&lt;/select&gt;</code></pre>
+<p>이 시점에서 이 코드를 이해하는 것은 꽤 쉽습니다. 속성 우선순위가 <code>&lt;option&gt;</code> 태그 자체에 <code>th:each</code> 속성을 설정할 수 있게 해준다는 점만 주목하세요.</p>
+</section>
+<section id="동적-필드" class="level2">
+<h2>6.6 동적 필드</h2>
+<p>Spring MVC의 고급 폼 필드 바인딩 기능 덕분에, 복잡한 Spring EL 표현식을 사용하여 동적 폼 필드를 폼 백업 빈에 바인딩할 수 있습니다. 이를 통해 <code>SeedStarter</code> 빈에 새로운 Row 객체를 생성하고, 사용자 요청에 따라 이러한 행의 필드를 폼에 추가할 수 있습니다.</p>
+<p>이를 위해 컨트롤러에 새로운 매핑된 메서드 몇 개가 필요합니다. 이 메서드들은 특정 요청 파라미터의 존재 여부에 따라 <code>SeedStarter</code>에 행을 추가하거나 제거합니다:</p>
+<pre class="java"><code>@RequestMapping(value=&quot;/seedstartermng&quot;, params={&quot;addRow&quot;})
+public String addRow(final SeedStarter seedStarter, final BindingResult bindingResult) {
+    seedStarter.getRows().add(new Row());
+    return &quot;seedstartermng&quot;;
+}
+
+@RequestMapping(value=&quot;/seedstartermng&quot;, params={&quot;removeRow&quot;})
+public String removeRow(
+        final SeedStarter seedStarter, final BindingResult bindingResult,
+        final HttpServletRequest req) {
+    final Integer rowId = Integer.valueOf(req.getParameter(&quot;removeRow&quot;));
+    seedStarter.getRows().remove(rowId.intValue());
+    return &quot;seedstartermng&quot;;
+}</code></pre>
+<p>이제 폼에 동적 테이블을 추가할 수 있습니다:</p>
+<pre class="html"><code>&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th th:text=&quot;#{seedstarter.rows.head.rownum}&quot;&gt;Row&lt;/th&gt;
+      &lt;th th:text=&quot;#{seedstarter.rows.head.variety}&quot;&gt;Variety&lt;/th&gt;
+      &lt;th th:text=&quot;#{seedstarter.rows.head.seedsPerCell}&quot;&gt;Seeds per cell&lt;/th&gt;
+      &lt;th&gt;
+        &lt;button type=&quot;submit&quot; name=&quot;addRow&quot; th:text=&quot;#{seedstarter.row.add}&quot;&gt;
+          Add row
+        &lt;/button&gt;
+      &lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr th:each=&quot;row,rowStat : *{rows}&quot;&gt;
+      &lt;td th:text=&quot;${rowStat.count}&quot;&gt;1&lt;/td&gt;
+      &lt;td&gt;
+        &lt;select th:field=&quot;*{rows[__${rowStat.index}__].variety}&quot;&gt;
+          &lt;option
+            th:each=&quot;var : ${allVarieties}&quot;
+            th:value=&quot;${var.id}&quot;
+            th:text=&quot;${var.name}&quot;
+          &gt;
+            Thymus Thymi
+          &lt;/option&gt;
+        &lt;/select&gt;
+      &lt;/td&gt;
+      &lt;td&gt;
+        &lt;input
+          type=&quot;text&quot;
+          th:field=&quot;*{rows[__${rowStat.index}__].seedsPerCell}&quot;
+        /&gt;
+      &lt;/td&gt;
+      &lt;td&gt;
+        &lt;button
+          type=&quot;submit&quot;
+          name=&quot;removeRow&quot;
+          th:value=&quot;${rowStat.index}&quot;
+          th:text=&quot;#{seedstarter.row.remove}&quot;
+        &gt;
+          Remove row
+        &lt;/button&gt;
+      &lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;</code></pre>
+<p>여기에는 이해해야 할 많은 것들이 있지만, 우리가 이미 알고 있는 것들 외에는 한 가지 ‘이상한’ 점이 있습니다:</p>
+<pre class="html"><code>&lt;select th:field=&quot;*{rows[__${rowStat.index}__].variety}&quot;&gt;
+  ...
+&lt;/select&gt;</code></pre>
+<p><em>“Using Thymeleaf”</em> 튜토리얼에서 기억하신다면, 저 <code>__${...}__</code> 구문은 전처리 표현식입니다. 이는 전체 표현식을 실제로 평가하기 전에 평가되는 내부 표현식입니다. 하지만 왜 이런 방식으로 행 인덱스를 지정해야 할까요? 다음과 같이 하면 충분하지 않을까요:</p>
+<pre class="html"><code>&lt;select th:field=&quot;*{rows[rowStat.index].variety}&quot;&gt;
+  ...
+&lt;/select&gt;</code></pre>
+<p>…실제로는 그렇지 않습니다. 문제는 Spring EL이 배열 인덱스 대괄호 안의 변수를 평가하지 않는다는 것입니다. 따라서 위의 표현식을 실행하면 <code>rows[0]</code>, <code>rows[1]</code> 등 대신 <code>rows[rowStat.index]</code>가 rows 컬렉션의 유효한 위치가 아니라는 오류가 발생합니다. 그래서 여기에 전처리가 필요한 것입니다.</p>
+<p>‘행 추가’ 버튼을 몇 번 누른 후의 결과 HTML 일부를 살펴보겠습니다:</p>
+<pre class="html"><code>&lt;tbody&gt;
+  &lt;tr&gt;
+    &lt;td&gt;1&lt;/td&gt;
+    &lt;td&gt;
+      &lt;select id=&quot;rows0.variety&quot; name=&quot;rows[0].variety&quot;&gt;
+        &lt;option selected=&quot;selected&quot; value=&quot;1&quot;&gt;Thymus vulgaris&lt;/option&gt;
+        &lt;option value=&quot;2&quot;&gt;Thymus x citriodorus&lt;/option&gt;
+        &lt;option value=&quot;3&quot;&gt;Thymus herba-barona&lt;/option&gt;
+        &lt;option value=&quot;4&quot;&gt;Thymus pseudolaginosus&lt;/option&gt;
+        &lt;option value=&quot;5&quot;&gt;Thymus serpyllum&lt;/option&gt;
+      &lt;/select&gt;
+    &lt;/td&gt;
+    &lt;td&gt;
+      &lt;input
+        id=&quot;rows0.seedsPerCell&quot;
+        name=&quot;rows[0].seedsPerCell&quot;
+        type=&quot;text&quot;
+        value=&quot;&quot;
+      /&gt;
+    &lt;/td&gt;
+    &lt;td&gt;
+      &lt;button name=&quot;removeRow&quot; type=&quot;submit&quot; value=&quot;0&quot;&gt;Remove row&lt;/button&gt;
+    &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+    &lt;td&gt;2&lt;/td&gt;
+    &lt;td&gt;
+      &lt;select id=&quot;rows1.variety&quot; name=&quot;rows[1].variety&quot;&gt;
+        &lt;option selected=&quot;selected&quot; value=&quot;1&quot;&gt;Thymus vulgaris&lt;/option&gt;
+        &lt;option value=&quot;2&quot;&gt;Thymus x citriodorus&lt;/option&gt;
+        &lt;option value=&quot;3&quot;&gt;Thymus herba-barona&lt;/option&gt;
+        &lt;option value=&quot;4&quot;&gt;Thymus pseudolaginosus&lt;/option&gt;
+        &lt;option value=&quot;5&quot;&gt;Thymus serpyllum&lt;/option&gt;
+      &lt;/select&gt;
+    &lt;/td&gt;
+    &lt;td&gt;
+      &lt;input
+        id=&quot;rows1.seedsPerCell&quot;
+        name=&quot;rows[1].seedsPerCell&quot;
+        type=&quot;text&quot;
+        value=&quot;&quot;
+      /&gt;
+    &lt;/td&gt;
+    &lt;td&gt;
+      &lt;button name=&quot;removeRow&quot; type=&quot;submit&quot; value=&quot;1&quot;&gt;Remove row&lt;/button&gt;
+    &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;</code></pre>
+</section>
+</section>
+<section id="유효성-검사와-오류-메시지" class="level1">
+<h1>7 유효성 검사와 오류 메시지</h1>
+<p>대부분의 폼에서는 사용자에게 그들이 만든 오류를 알려주기 위해 유효성 검사 메시지를 표시해야 할 것입니다.</p>
+<p>Thymeleaf는 이를 위한 몇 가지 도구를 제공합니다: <code>#fields</code> 객체의 몇 가지 함수, <code>th:errors</code> 및 <code>th:errorclass</code> 속성입니다.</p>
+<section id="필드-오류" class="level2">
+<h2>7.1 필드 오류</h2>
+<p>필드에 오류가 있을 경우 특정 CSS 클래스를 어떻게 설정할 수 있는지 살펴보겠습니다:</p>
+<pre class="html"><code>&lt;input
+  type=&quot;text&quot;
+  th:field=&quot;*{datePlanted}&quot;
+  th:class=&quot;${#fields.hasErrors(&#39;datePlanted&#39;)}? fieldError&quot;
+/&gt;</code></pre>
+<p>보시다시피, <code>#fields.hasErrors(...)</code> 함수는 필드 표현식을 매개변수로 받아(<code>datePlanted</code>), 해당 필드에 유효성 검사 오류가 있는지 여부를 나타내는 불리언을 반환합니다.</p>
+<p>또한 해당 필드의 모든 오류를 가져와 반복할 수도 있습니다:</p>
+<pre class="html"><code>&lt;ul&gt;
+  &lt;li th:each=&quot;err : ${#fields.errors(&#39;datePlanted&#39;)}&quot; th:text=&quot;${err}&quot; /&gt;
+&lt;/ul&gt;</code></pre>
+<p>반복하는 대신 <code>th:errors</code>를 사용할 수도 있습니다. 이는 지정된 선택자에 대한 모든 오류를 <code>&lt;br /&gt;</code> 로 구분된 목록으로 만드는 특수한 속성입니다:</p>
+<pre class="html"><code>&lt;input type=&quot;text&quot; th:field=&quot;*{datePlanted}&quot; /&gt;
+&lt;p th:if=&quot;${#fields.hasErrors(&#39;datePlanted&#39;)}&quot; th:errors=&quot;*{datePlanted}&quot;&gt;
+  Incorrect date
+&lt;/p&gt;</code></pre>
+<section id="오류-기반-css-스타일링-단순화-therrorclass" class="level3">
+<h3>오류 기반 CSS 스타일링 단순화: <code>th:errorclass</code></h3>
+<p>위에서 본 예시, <em>해당 필드에 오류가 있을 경우 폼 입력에 CSS 클래스 설정하기</em>는 매우 일반적이어서 Thymeleaf는 이를 정확히 수행하기 위한 특정 속성을 제공합니다: <code>th:errorclass</code>.</p>
+<p>폼 필드 태그(input, select, textarea…)에 적용되면, 동일한 태그의 기존 <code>name</code> 또는 <code>th:field</code> 속성에서 검사할 필드의 이름을 읽고, 해당 필드에 관련된 오류가 있으면 지정된 CSS 클래스를 태그에 추가합니다:</p>
+<pre class="html"><code>&lt;input
+  type=&quot;text&quot;
+  th:field=&quot;*{datePlanted}&quot;
+  class=&quot;small&quot;
+  th:errorclass=&quot;fieldError&quot;
+/&gt;</code></pre>
+<p><code>datePlanted</code>에 오류가 있다면, 이는 다음과 같이 렌더링될 것입니다:</p>
+<pre class="html"><code>&lt;input
+  type=&quot;text&quot;
+  id=&quot;datePlanted&quot;
+  name=&quot;datePlanted&quot;
+  value=&quot;2013-01-01&quot;
+  class=&quot;small fieldError&quot;
+/&gt;</code></pre>
+</section>
+</section>
+<section id="모든-오류" class="level2">
+<h2>7.2 모든 오류</h2>
+<p>그렇다면 폼의 모든 오류를 보여주고 싶다면 어떻게 해야 할까요? <code>#fields.hasErrors(...)</code> 와 <code>#fields.errors(...)</code> 메서드를 <code>'*'</code> 또는 <code>'all'</code> 상수(이 둘은 동등합니다)와 함께 쿼리하면 됩니다:</p>
+<pre class="html"><code>&lt;ul th:if=&quot;${#fields.hasErrors(&#39;*&#39;)}&quot;&gt;
+  &lt;li th:each=&quot;err : ${#fields.errors(&#39;*&#39;)}&quot; th:text=&quot;${err}&quot;&gt;
+    Input is incorrect
+  &lt;/li&gt;
+&lt;/ul&gt;</code></pre>
+<p>위의 예제처럼, 모든 오류를 가져와 반복할 수 있습니다…</p>
+<pre class="html"><code>&lt;ul&gt;
+  &lt;li th:each=&quot;err : ${#fields.errors(&#39;*&#39;)}&quot; th:text=&quot;${err}&quot; /&gt;
+&lt;/ul&gt;</code></pre>
+<p>…또는 <code>&lt;br /&gt;</code>로 구분된 목록을 만들 수 있습니다:</p>
+<pre class="html"><code>&lt;p th:if=&quot;${#fields.hasErrors(&#39;all&#39;)}&quot; th:errors=&quot;*{all}&quot;&gt;Incorrect date&lt;/p&gt;</code></pre>
+<p>마지막으로 <code>#fields.hasErrors('*')</code>는 <code>#fields.hasAnyErrors()</code>와 동등하고, <code>#fields.errors('*')</code>는 <code>#fields.allErrors()</code>와 동등하다는 점을 주목하세요. 선호하는 구문을 사용하세요:</p>
+<pre class="html"><code>&lt;div th:if=&quot;${#fields.hasAnyErrors()}&quot;&gt;
+  &lt;p th:each=&quot;err : ${#fields.allErrors()}&quot; th:text=&quot;${err}&quot;&gt;...&lt;/p&gt;
+&lt;/div&gt;</code></pre>
+</section>
+<section id="전역-오류" class="level2">
+<h2>7.3 전역 오류</h2>
+<p>Spring 폼에는 세 번째 유형의 오류가 있습니다: <em>전역</em> 오류입니다. 이는 폼의 특정 필드와 연관되지 않지만 여전히 존재하는 오류입니다.</p>
+<p>Thymeleaf는 이러한 오류에 접근하기 위한 <code>global</code> 상수를 제공합니다:</p>
+<pre class="html"><code>&lt;ul th:if=&quot;${#fields.hasErrors(&#39;global&#39;)}&quot;&gt;
+  &lt;li th:each=&quot;err : ${#fields.errors(&#39;global&#39;)}&quot; th:text=&quot;${err}&quot;&gt;
+    Input is incorrect
+  &lt;/li&gt;
+&lt;/ul&gt;</code></pre>
+<pre class="html"><code>&lt;p th:if=&quot;${#fields.hasErrors(&#39;global&#39;)}&quot; th:errors=&quot;*{global}&quot;&gt;
+  Incorrect date
+&lt;/p&gt;</code></pre>
+<p>…그리고 동등한 <code>#fields.hasGlobalErrors()</code>와 <code>#fields.globalErrors()</code> 편의 메서드도 있습니다:</p>
+<pre class="html"><code>&lt;div th:if=&quot;${#fields.hasGlobalErrors()}&quot;&gt;
+  &lt;p th:each=&quot;err : ${#fields.globalErrors()}&quot; th:text=&quot;${err}&quot;&gt;...&lt;/p&gt;
+&lt;/div&gt;</code></pre>
+</section>
+<section id="폼-외부에-오류-표시하기" class="level2">
+<h2>7.4 폼 외부에 오류 표시하기</h2>
+<p>폼 유효성 검사 오류는 선택(<code>*{...}</code>) 표현식 대신 변수(<code>${...}</code>) 표현식을 사용하고 폼 백업 빈의 이름을 접두사로 붙여 폼 외부에도 표시할 수 있습니다:</p>
+<pre class="html"><code>&lt;div th:errors=&quot;${myForm}&quot;&gt;...&lt;/div&gt;
+&lt;div th:errors=&quot;${myForm.date}&quot;&gt;...&lt;/div&gt;
+&lt;div th:errors=&quot;${myForm.*}&quot;&gt;...&lt;/div&gt;
+
+&lt;div th:if=&quot;${#fields.hasErrors(&#39;${myForm}&#39;)}&quot;&gt;...&lt;/div&gt;
+&lt;div th:if=&quot;${#fields.hasErrors(&#39;${myForm.date}&#39;)}&quot;&gt;...&lt;/div&gt;
+&lt;div th:if=&quot;${#fields.hasErrors(&#39;${myForm.*}&#39;)}&quot;&gt;...&lt;/div&gt;
+
+&lt;form th:object=&quot;${myForm}&quot;&gt;...&lt;/form&gt;</code></pre>
+</section>
+<section id="풍부한-오류-객체" class="level2">
+<h2>7.5 풍부한 오류 객체</h2>
+<p>Thymeleaf는 폼 오류 정보를 (단순한 <em>문자열</em> 대신) 빈 형태로 얻을 수 있는 가능성을 제공합니다. 이 빈은 <code>fieldName</code> (String), <code>message</code> (String), <code>global</code> (boolean) 속성을 가집니다.</p>
+<p>이러한 오류는 <code>#fields.detailedErrors()</code> 유틸리티 메서드를 통해 얻을 수 있습니다:</p>
+<pre class="html"><code>&lt;ul&gt;
+  &lt;li
+    th:each=&quot;e : ${#fields.detailedErrors()}&quot;
+    th:class=&quot;${e.global}? globalerr : fielderr&quot;
+  &gt;
+    &lt;span th:text=&quot;${e.global}? &#39;*&#39; : ${e.fieldName}&quot;&gt;The field name&lt;/span&gt; |
+    &lt;span th:text=&quot;${e.message}&quot;&gt;The error message&lt;/span&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;</code></pre>
+</section>
+</section>
+<section id="아직은-프로토타입입니다" class="level1">
+<h1>8 아직은 프로토타입입니다!</h1>
+<p>이제 우리의 애플리케이션이 준비되었습니다. 하지만 우리가 만든 <code>.html</code> 페이지를 다시 한 번 살펴보겠습니다…</p>
+<p>Thymeleaf로 작업하는 가장 좋은 결과 중 하나는 우리가 HTML에 추가한 모든 기능에도 불구하고 여전히 프로토타입으로 사용할 수 있다는 것입니다(우리는 이를 <em>자연 템플릿</em>이라고 부릅니다). 애플리케이션을 실행하지 않고 <code>seedstartermng.html</code>을 브라우저에서 직접 열어보겠습니다:</p>
+<figure>
+<img src="images/thymeleafspring/stsm-natural-templating.png" alt="STSM 자연 템플릿" />
+<figcaption aria-hidden="true">STSM 자연 템플릿</figcaption>
+</figure>
+<p>바로 이겁니다! 작동하는 애플리케이션이 아니고, 실제 데이터도 아닙니다… 하지만 완벽하게 표시 가능한 HTML 코드로 만들어진 완벽한 프로토타입입니다.</p>
+</section>
+<section id="변환-서비스" class="level1">
+<h1>9 변환 서비스</h1>
+<section id="구성" class="level2">
+<h2>9.1 구성</h2>
+<p>앞서 설명했듯이, Thymeleaf는 애플리케이션 컨텍스트에 등록된 변환 서비스를 사용할 수 있습니다. 우리의 애플리케이션 구성 클래스는 Spring의 <code>WebMvcConfigurerAdapter</code> 헬퍼를 확장함으로써 자동으로 이러한 변환 서비스를 등록하며, 우리가 필요로 하는 <em>포맷터</em>를 추가하여 구성할 수 있습니다. 다시 한 번 어떻게 생겼는지 살펴보겠습니다:</p>
+<pre class="java"><code>@Override
+public void addFormatters(final FormatterRegistry registry) {
+    super.addFormatters(registry);
+    registry.addFormatter(varietyFormatter());
+    registry.addFormatter(dateFormatter());
+}
+
+@Bean
+public VarietyFormatter varietyFormatter() {
+    return new VarietyFormatter();
+}
+
+@Bean
+public DateFormatter dateFormatter() {
+    return new DateFormatter();
+}</code></pre>
+</section>
+<section id="이중-중괄호-구문" class="level2">
+<h2>9.1 이중 중괄호 구문</h2>
+<p>변환 서비스는 모든 객체를 문자열로 변환/포맷하기 위해 쉽게 적용될 수 있습니다. 이는 이중 중괄호 표현 구문을 통해 수행됩니다:</p>
+<ul>
+<li>변수 표현식의 경우: <code>${{...}}</code></li>
+<li>선택 표현식의 경우: <code>*{{...}}</code></li>
+</ul>
+<p>예를 들어, 천 단위 구분자로 쉼표를 추가하는 Integer-to-String 변환기가 주어졌다고 가정하면, 다음과 같습니다:</p>
+<pre class="html"><code>&lt;p th:text=&quot;${val}&quot;&gt;...&lt;/p&gt;
+&lt;p th:text=&quot;${{val}}&quot;&gt;...&lt;/p&gt;</code></pre>
+<p>…이는 다음과 같은 결과를 낼 것입니다:</p>
+<pre class="html"><code>&lt;p&gt;1234567890&lt;/p&gt;
+&lt;p&gt;1,234,567,890&lt;/p&gt;</code></pre>
+</section>
+<section id="폼에서의-사용" class="level2">
+<h2>9.2 폼에서의 사용</h2>
+<p>이전에 모든 <code>th:field</code> 속성이 항상 변환 서비스를 적용한다는 것을 보았습니다. 따라서 이것은:</p>
+<pre class="html"><code>&lt;input type=&quot;text&quot; th:field=&quot;*{datePlanted}&quot; /&gt;</code></pre>
+<p>…실제로 다음과 동등합니다:</p>
+<pre class="html"><code>&lt;input type=&quot;text&quot; th:field=&quot;*{{datePlanted}}&quot; /&gt;</code></pre>
+<p>Spring의 요구사항에 따라, 이는 단일 중괄호 구문을 사용하는 표현식에서 변환 서비스가 적용되는 유일한 시나리오임을 주목하세요.</p>
+</section>
+<section id="conversions-유틸리티-객체" class="level2">
+<h2>9.3 <code>#conversions</code> 유틸리티 객체</h2>
+<hr />
+<p><code>#conversions</code> 표현 유틸리티 객체를 사용하면 필요한 곳에서 변환 서비스를 수동으로 실행할 수 있습니다:</p>
+<pre class="html"><code>&lt;p th:text=&quot;${&#39;Val: &#39; + #conversions.convert(val,&#39;String&#39;)}&quot;&gt;...&lt;/p&gt;</code></pre>
+<p>이 유틸리티 객체의 구문:</p>
+<ul>
+<li><code>#conversions.convert(Object,Class)</code>: 객체를 지정된 클래스로 변환합니다.</li>
+<li><code>#conversions.convert(Object,String)</code>: 위와 동일하지만, 대상 클래스를 문자열로 지정합니다 (<code>java.lang.</code> 패키지는 생략할 수 있습니다).</li>
+</ul>
+</section>
+</section>
+<section id="템플릿-조각fragment-렌더링" class="level1">
+<h1>10 템플릿 조각(Fragment) 렌더링</h1>
+<p>Thymeleaf는 템플릿의 일부만을 실행 결과로 렌더링할 수 있는 가능성을 제공합니다: <em>조각(Fragment)</em>이라고 합니다.</p>
+<p>이는 유용한 컴포넌트화 도구가 될 수 있습니다. 예를 들어, AJAX 호출에서 실행되는 컨트롤러에서 사용될 수 있으며, 이미 브라우저에 로드된 페이지의 마크업 조각을 반환할 수 있습니다(셀렉트 업데이트, 버튼 활성화/비활성화 등을 위해).</p>
+<p>조각 렌더링은 Thymeleaf의 <em>조각 스펙</em>을 사용하여 달성할 수 있습니다: <code>org.thymeleaf.fragment.IFragmentSpec</code> 인터페이스를 구현하는 객체입니다.</p>
+<p>이러한 구현 중 가장 일반적인 것은 <code>org.thymeleaf.standard.fragment.StandardDOMSelectorFragmentSpec</code>으로, <code>th:include</code> 또는 <code>th:replace</code>에서 사용되는 것과 정확히 같은 DOM 선택자를 사용하여 조각을 지정할 수 있습니다.</p>
+<section id="뷰-빈bean에서-조각fragment-지정하기" class="level2">
+<h2>10.1 뷰 빈(Bean)에서 조각(Fragment) 지정하기</h2>
+<p><em>뷰 빈</em>은 애플리케이션 컨텍스트에서 선언된 <code>org.thymeleaf.spring6.view.ThymeleafView</code> 클래스의 빈입니다(Java 구성을 사용하는 경우 <code>@Bean</code> 선언). 이를 통해 다음과 같이 조각을 지정할 수 있습니다:</p>
+<pre class="java"><code>@Bean(name=&quot;content-part&quot;)
+@Scope(&quot;prototype&quot;)
+public ThymeleafView someViewBean() {
+    ThymeleafView view = new ThymeleafView(&quot;index&quot;); // templateName = &#39;index&#39;
+    view.setMarkupSelector(&quot;content&quot;);
+    return view;
+}</code></pre>
+<p>위의 빈 정의가 주어졌을 때, 우리의 컨트롤러가 <code>content-part</code>(위 빈의 이름)를 반환한다면…</p>
+<pre class="java"><code>@RequestMapping(&quot;/showContentPart&quot;)
+public String showContentPart() {
+    ...
+    return &quot;content-part&quot;;
+}</code></pre>
+<p>…thymeleaf는 <code>index</code> 템플릿의 <code>content</code> 조각만 반환할 것입니다 – 이 위치는 아마도 접두사와 접미사가 적용된 후 <code>/WEB-INF/templates/index.html</code>과 같을 것입니다. 따라서 결과는 <code>index :: content</code>를 지정하는 것과 완전히 동등할 것입니다:</p>
+<pre class="html"><code>&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+  ...
+  &lt;body&gt;
+    ...
+    &lt;div th:fragment=&quot;content&quot;&gt;Only this div will be rendered!&lt;/div&gt;
+    ...
+  &lt;/body&gt;
+&lt;/html&gt;</code></pre>
+<p>또한 Thymeleaf 마크업 선택자의 힘 덕분에 <code>th:fragment</code> 속성 없이도 템플릿에서 조각을 선택할 수 있습니다. 예를 들어 <code>id</code> 속성을 사용해 보겠습니다:</p>
+<pre class="java"><code>@Bean(name=&quot;content-part&quot;)
+@Scope(&quot;prototype&quot;)
+public ThymeleafView someViewBean() {
+    ThymeleafView view = new ThymeleafView(&quot;index&quot;); // templateName = &#39;index&#39;
+    view.setMarkupSelector(&quot;#content&quot;);
+    return view;
+}</code></pre>
+<p>…이는 다음을 완벽하게 선택할 것입니다:</p>
+<pre class="html"><code>&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+  ...
+  &lt;body&gt;
+    ...
+    &lt;div id=&quot;content&quot;&gt;Only this div will be rendered!&lt;/div&gt;
+    ...
+  &lt;/body&gt;
+&lt;/html&gt;</code></pre>
+</section>
+<section id="컨트롤러-반환-값에서-조각-지정하기" class="level2">
+<h2>10.2 컨트롤러 반환 값에서 조각 지정하기</h2>
+<p><em>뷰 빈</em>을 선언하는 대신, 컨트롤러 자체에서 <em>조각 표현식</em>의 구문을 사용하여 조각을 지정할 수 있습니다. <code>th:insert</code> 또는 <code>th:replace</code> 속성에서와 마찬가지로:</p>
+<pre class="java"><code>@RequestMapping(&quot;/showContentPart&quot;)
+public String showContentPart() {
+    ...
+    return &quot;index :: content&quot;;
+}</code></pre>
+<p>물론, 다시 한 번 DOM 선택자의 모든 기능을 사용할 수 있으므로 <code>id="content"</code>와 같은 표준 HTML 속성을 기반으로 조각을 선택할 수 있습니다:</p>
+<pre class="java"><code>@RequestMapping(&quot;/showContentPart&quot;)
+public String showContentPart() {
+    ...
+    return &quot;index :: #content&quot;;
+}</code></pre>
+<p>그리고 매개변수도 사용할 수 있습니다:</p>
+<pre class="java"><code>@RequestMapping(&quot;/showContentPart&quot;)
+public String showContentPart() {
+    ...
+    return &quot;index :: #content (&#39;myvalue&#39;)&quot;;
+}</code></pre>
+</section>
+</section>
+<section id="고급-통합-기능" class="level1">
+<h1>11 고급 통합 기능</h1>
+<section id="requestdatavalueprocessor와의-통합" class="level2">
+<h2>11.1 <code>RequestDataValueProcessor</code>와의 통합</h2>
+<p>Thymeleaf는 Spring의 <code>RequestDataValueProcessor</code> 인터페이스와 원활하게 통합됩니다. 이 인터페이스는 링크 URL, 폼 URL 및 폼 필드 값이 마크업 결과에 작성되기 전에 이를 가로채고, CSRF(Cross-Site Request Forgery)와 같은 보안 기능을 가능하게 하는 숨겨진 폼 필드를 투명하게 추가할 수 있습니다.</p>
+<p><code>RequestDataValueProcessor</code>의 구현은 애플리케이션 컨텍스트에서 쉽게 구성할 수 있습니다. <code>org.springframework.web.servlet.support.RequestDataValueProcessor</code> 인터페이스를 구현하고 빈 이름을 <code>requestDataValueProcessor</code>로 지정해야 합니다:</p>
+<pre class="java"><code>@Bean
+public RequestDataValueProcessor requestDataValueProcessor() {
+  return new MyRequestDataValueProcessor();
+}</code></pre>
+<p>…그리고 Thymeleaf는 다음과 같이 사용합니다:</p>
+<ul>
+<li><p><code>th:href</code>와 <code>th:src</code>는 URL을 렌더링하기 전에 <code>RequestDataValueProcessor.processUrl(...)</code>을 호출합니다.</p></li>
+<li><p><code>th:action</code>은 폼의 <code>action</code> 속성을 렌더링하기 전에 <code>RequestDataValueProcessor.processAction(...)</code>을 호출하고, 추가로 이 속성이 <code>&lt;form&gt;</code> 태그에 적용되고 있는지 감지합니다(어쨌든 유일한 장소여야 합니다). 이 경우 <code>RequestDataValueProcessor.getExtraHiddenFields(...)</code>를 호출하고 반환된 숨겨진 필드를 닫는 <code>&lt;/form&gt;</code> 태그 바로 앞에 추가합니다.</p></li>
+<li><p><code>th:value</code>는 참조하는 값을 렌더링하기 위해 <code>RequestDataValueProcessor.processFormFieldValue(...)</code>를 호출합니다. 단, 동일한 태그에 <code>th:field</code>가 있는 경우는 예외입니다(이 경우 <code>th:field</code>가 처리합니다).</p></li>
+<li><p><code>th:field</code>는 적용되는 필드의 값을 렌더링하기 위해 <code>RequestDataValueProcessor.processFormFieldValue(...)</code>를 호출합니다(<code>&lt;textarea&gt;</code>인 경우 태그 본문).</p></li>
+</ul>
+<blockquote>
+<p>애플리케이션에서 <code>RequestDataValueProcessor</code>를 명시적으로 구현해야 하는 시나리오는 매우 드뭅니다. 대부분의 경우, 이는 Spring Security의 CSRF 지원과 같이 투명하게 사용하는 보안 라이브러리에 의해 자동으로 사용됩니다.</p>
+</blockquote>
+</section>
+<section id="컨트롤러에-대한-uri-구축" class="level2">
+<h2>11.1 컨트롤러에 대한 URI 구축</h2>
+<p>Spring 4.1 버전부터는 컨트롤러가 매핑된 URI를 알 필요 없이 뷰에서 직접 어노테이션이 달린 컨트롤러로의 링크를 구축할 수 있는 기능을 제공합니다.</p>
+<p>Thymeleaf에서는 <code>#mvc.url(...)</code> 표현식 객체 메서드를 통해 이를 달성할 수 있습니다. 이 메서드를 통해 컨트롤러 메서드를 컨트롤러 클래스의 대문자와 메서드 이름으로 지정할 수 있습니다. 이는 JSP의 <code>spring:mvcUrl(...)</code> 사용자 정의 함수와 동등합니다.</p>
+<p>예를 들어, 다음과 같은 경우:</p>
+<pre class="java"><code>public class ExampleController {
+
+    @RequestMapping(&quot;/data&quot;)
+    public String getData(Model model) { ... return &quot;template&quot; }
+
+    @RequestMapping(&quot;/data&quot;)
+    public String getDataParam(@RequestParam String type) { ... return &quot;template&quot; }
+
+}</code></pre>
+<p>다음 코드는 이에 대한 링크를 생성합니다:</p>
+<pre class="html"><code>&lt;a th:href=&quot;${(#mvc.url(&#39;EC#getData&#39;)).build()}&quot;&gt;Get Data Param&lt;/a&gt;
+&lt;a th:href=&quot;${(#mvc.url(&#39;EC#getDataParam&#39;).arg(0,&#39;internal&#39;)).build()}&quot;
+  &gt;Get Data Param&lt;/a
+&gt;</code></pre>
+<p>이 메커니즘에 대해 더 자세히 알아보려면 http://docs.spring.io/spring-framework/docs/4.1.2.RELEASE/spring-framework-reference/html/mvc.html#mvc-links-to-controllers-from-views 를 참조하세요.</p>
+</section>
+</section>
+<section id="spring-webflow-통합" class="level1">
+<h1>12 Spring WebFlow 통합</h1>
+<section id="기본-구성" class="level2">
+<h2>12.1 기본 구성</h2>
+<p>Thymeleaf + Spring 통합 패키지에는 Spring WebFlow와의 통합이 포함되어 있습니다.</p>
+<p><em>참고: Thymeleaf를 Spring 6와 함께 사용할 때는 Spring WebFlow 3.0+ 이상이 필요하며, Spring 5와 함께 사용할 때는 Spring WebFlow 2.5가 필요합니다.</em></p>
+<p>WebFlow는 특정 이벤트(<em>전환</em>)가 트리거될 때 표시된 페이지의 조각을 렌더링하기 위한 일부 AJAX 기능을 포함하고 있으며, Thymeleaf가 이러한 AJAX 요청을 처리할 수 있도록 하기 위해 다른 <code>ViewResolver</code> 구현을 사용해야 합니다. 다음과 같이 구성됩니다:</p>
+<pre class="java"><code>@Bean
+public FlowDefinitionRegistry flowRegistry() {
+    // 참고: 앱에 추가 구성이 필요할 수 있습니다
+    return getFlowDefinitionRegistryBuilder()
+            .addFlowLocation(&quot;...&quot;)
+            .setFlowBuilderServices(flowBuilderServices())
+            .build();
+}
+
+@Bean
+public FlowExecutor flowExecutor() {
+    // 참고: 앱에 추가 구성이 필요할 수 있습니다
+    return getFlowExecutorBuilder(flowRegistry()).build();
+}
+
+@Bean
+public FlowBuilderServices flowBuilderServices() {
+    // 참고: 앱에 추가 구성이 필요할 수 있습니다
+    return getFlowBuilderServicesBuilder()
+            .setViewFactoryCreator(viewFactoryCreator())
+            .build();
+}
+
+@Bean
+public ViewFactoryCreator viewFactoryCreator() {
+    MvcViewFactoryCreator factoryCreator = new MvcViewFactoryCreator();
+    factoryCreator.setViewResolvers(
+            Collections.singletonList(thymeleafViewResolver()));
+    factoryCreator.setUseSpringBeanBinding(true);
+    return factoryCreator;
+}
+
+@Bean
+public ViewResolver thymeleafViewResolver() {
+    AjaxThymeleafViewResolver viewResolver = new AjaxThymeleafViewResolver();
+    // 특별한 ThymeleafView 구현체를 설정해야 합니다: FlowAjaxThymeleafView
+    viewResolver.setViewClass(FlowAjaxThymeleafView.class);
+    viewResolver.setTemplateEngine(templateEngine());
+    return viewResolver;
+}
+</code></pre>
+<p>위의 구성은 완전한 구성이 아닙니다: 핸들러 등을 추가로 구성해야 합니다. 자세한 내용은 Spring WebFlow 문서를 참조하세요.</p>
+<p>여기서부터는 view-state에서 Thymeleaf 템플릿을 지정할 수 있습니다:</p>
+<pre class="xml"><code>&lt;view-state id=&quot;detail&quot; view=&quot;bookingDetail&quot;&gt;
+    ...
+&lt;/view-state&gt;</code></pre>
+<p>위의 예에서 <code>bookingDetail</code>은 <code>TemplateEngine</code>에 구성된 <em>Template Resolvers</em> 중 하나가 이해할 수 있는 일반적인 방식으로 지정된 Thymeleaf 템플릿입니다.</p>
+</section>
+<section id="spring-webflow에서의-ajax-조각" class="level2">
+<h2>12.2 Spring WebFlow에서의 AJAX 조각</h2>
+<blockquote>
+<p>여기서 설명하는 것은 Spring WebFlow와 함께 사용할 AJAX 조각을 만드는 방법일 뿐입니다. WebFlow를 사용하지 않는 경우, AJAX 요청에 응답하고 HTML 조각을 반환하는 Spring MVC 컨트롤러를 만드는 것은 다른 템플릿을 반환하는 컨트롤러를 만드는 것과 마찬가지로 간단합니다. 단, 컨트롤러 메서드에서 <code>"main :: admin"</code>과 같은 조각을 반환할 가능성이 높다는 점만 다릅니다.</p>
+</blockquote>
+<p>WebFlow는 <code>&lt;render&gt;</code> 태그를 사용하여 AJAX를 통해 렌더링할 조각을 지정할 수 있습니다:</p>
+<pre class="xml"><code>&lt;view-state id=&quot;detail&quot; view=&quot;bookingDetail&quot;&gt;
+    &lt;transition on=&quot;updateData&quot;&gt;
+        &lt;render fragments=&quot;hoteldata&quot;/&gt;
+    &lt;/transition&gt;
+&lt;/view-state&gt;</code></pre>
+<p>이러한 조각들(<code>hoteldata</code>의 경우)은 마크업에서 <code>th:fragment</code>로 지정된 쉼표로 구분된 조각 목록일 수 있습니다:</p>
+<pre class="xml"><code>&lt;div id=&quot;data&quot; th:fragment=&quot;hoteldata&quot;&gt;
+    This is a content to be changed
+&lt;/div&gt;</code></pre>
+<p><em>지정된 조각에는 항상 <code>id</code> 속성이 있어야 브라우저에서 실행되는 Spring JavaScript 라이브러리가 마크업을 대체할 수 있다는 점을 항상 기억하세요.</em></p>
+<p><code>&lt;render&gt;</code> 태그는 DOM 선택자를 사용하여 지정할 수도 있습니다:</p>
+<pre class="html"><code>&lt;view-state id=&quot;detail&quot; view=&quot;bookingDetail&quot;&gt;
+  &lt;transition on=&quot;updateData&quot;&gt;
+    &lt;render fragments=&quot;[//div[@id=&#39;data&#39;]]&quot; /&gt;
+  &lt;/transition&gt;
+&lt;/view-state&gt;</code></pre>
+<p>…이 경우 <code>th:fragment</code>가 필요하지 않습니다:</p>
+<pre class="html"><code>&lt;div id=&quot;data&quot;&gt;This is a content to be changed&lt;/div&gt;</code></pre>
+<p><code>updateData</code> 전환을 트리거하는 코드는 다음과 같습니다:</p>
+<pre class="html"><code>&lt;script type=&quot;text/javascript&quot; th:src=&quot;@{/resources/dojo/dojo.js}&quot;&gt;&lt;/script&gt;
+&lt;script type=&quot;text/javascript&quot; th:src=&quot;@{/resources/spring/Spring.js}&quot;&gt;&lt;/script&gt;
+&lt;script
+  type=&quot;text/javascript&quot;
+  th:src=&quot;@{/resources/spring/Spring-Dojo.js}&quot;
+&gt;&lt;/script&gt;
+
+...
+
+&lt;form id=&quot;triggerform&quot; method=&quot;post&quot; action=&quot;&quot;&gt;
+  &lt;input
+    type=&quot;submit&quot;
+    id=&quot;doUpdate&quot;
+    name=&quot;_eventId_updateData&quot;
+    value=&quot;Update now!&quot;
+  /&gt;
+&lt;/form&gt;
+
+&lt;script type=&quot;text/javascript&quot;&gt;
+  Spring.addDecoration(
+    new Spring.AjaxEventDecoration({
+      formId: &quot;triggerform&quot;,
+      elementId: &quot;doUpdate&quot;,
+      event: &quot;onclick&quot;,
+    })
+  );
+&lt;/script&gt;</code></pre>
+</section>
+</section>
+		</div>
+
+	</div>
+
+</body>
+
+</html>
